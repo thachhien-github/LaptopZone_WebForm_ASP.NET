@@ -1,0 +1,359 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="LaptopZone_project.Public.Site" %>
+
+<!DOCTYPE html>
+<html lang="vi">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Laptop Zone - High-End Computing Solutions</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+
+    <style>
+        :root {
+            --primary: #0984e3;
+            --primary-hover: #0773c5;
+            --dark-accent: #2d3436;
+            --slate-50: #f8fafc;
+            --slate-100: #f1f5f9;
+            --slate-200: #e2e8f0;
+            --slate-400: #94a3b8;
+            --slate-500: #64748b;
+            --slate-600: #475569;
+            --slate-900: #0f172a;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            color: var(--slate-900);
+        }
+
+        /* --- Cập nhật Logo theo nhận diện mới --- */
+        .brand-wrapper {
+            text-decoration: none !important;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .brand-wrapper:hover {
+            transform: scale(1.02);
+        }
+
+        .brand-name {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 32px;
+            letter-spacing: -1.5px;
+            color: #2d3436;
+            margin: 0;
+            text-transform: uppercase;
+            display: flex;
+            align-items: baseline;
+        }
+
+        .zone-text {
+            display: flex;
+            align-items: baseline;
+            margin-left: 4px;
+        }
+
+        /* Chữ Z: Gradient rực rỡ */
+        .highlight-z {
+            font-size: 44px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00d2ff 0%, #0984e3 50%, #6c5ce7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+            filter: drop-shadow(0 2px 6px rgba(9, 132, 227, 0.2));
+        }
+
+        /* Chữ ONE: Gradient Blue chuẩn hóa đơn */
+        .one-text {
+            background: linear-gradient(to bottom, #0984e3, #0773c5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 30px;
+            font-weight: 800;
+        }
+
+        /* --- Giữ nguyên các Style khác của bạn --- */
+        .header-main {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--slate-100);
+            height: 85px;
+        }
+
+        .search-input {
+            height: 46px;
+            background: var(--slate-100);
+            border: 1.5px solid transparent;
+            border-radius: 12px;
+            padding: 0 45px;
+            font-size: 14px;
+            transition: all 0.25s;
+        }
+
+        .search-input:focus {
+            background: white;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(9, 132, 227, 0.1);
+            outline: none;
+        }
+
+        .nav-bar {
+            background: white;
+            border-bottom: 1px solid var(--slate-200);
+            height: 50px;
+        }
+
+        .nav-item-link {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--slate-600);
+            text-decoration: none;
+            height: 50px;
+            display: inline-flex;
+            align-items: center;
+            padding: 0 18px;
+            border-bottom: 3px solid transparent;
+            transition: 0.2s;
+        }
+
+        .nav-item-link:hover, .nav-item-link.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .cart-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--slate-600);
+            position: relative;
+            background: var(--slate-50);
+            transition: 0.2s;
+        }
+
+        .cart-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff7675;
+            color: white;
+            font-size: 10px;
+            font-weight: 800;
+            min-width: 20px;
+            height: 20px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+        }
+
+        .footer-modern {
+            background: white;
+            border-top: 1px solid var(--slate-100);
+            padding: 70px 0 30px;
+        }
+
+        .footer-title {
+            font-weight: 700;
+            color: var(--dark-accent);
+            margin-bottom: 25px;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+        }
+
+        .footer-link {
+            color: var(--slate-500);
+            text-decoration: none;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 12px;
+            transition: 0.2s;
+        }
+
+        .footer-link:hover {
+            color: var(--primary);
+            padding-left: 5px;
+        }
+
+        .contact-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+            align-items: flex-start;
+        }
+    </style>
+    <asp:ContentPlaceHolder ID="head" runat="server"></asp:ContentPlaceHolder>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <asp:SqlDataSource ID="dsLoaiLaptop" runat="server"
+            ConnectionString="<%$ ConnectionStrings:LaptopStoreDBConnectionString %>"
+            SelectCommand="SELECT MaLoai, TenLoai FROM LoaiLaptop"></asp:SqlDataSource>
+
+        <header class="header-main sticky-top">
+            <div class="container h-100 d-flex align-items-center justify-content-between gap-4">
+                <a href="Default.aspx" class="brand-wrapper">
+                    <h1 class="brand-name">
+                        LAPTOP<span class="zone-text">
+                            <span class="highlight-z">Z</span><span class="one-text">ONE</span>
+                        </span>
+                    </h1>
+                </a>
+
+                <div class="search-container d-none d-md-block flex-grow-1 mx-4" style="max-width: 500px;">
+                    <div class="position-relative">
+                        <asp:LinkButton ID="lbtnSearch" runat="server" OnClick="btnSearch_Click" CssClass="position-absolute start-0 top-50 translate-middle-y ps-3 text-decoration-none" Style="color: var(--slate-400)">
+                            <span class="material-symbols-outlined">search</span>
+                        </asp:LinkButton>
+                        <asp:Panel runat="server" DefaultButton="lbtnSearch">
+                            <asp:TextBox ID="txtSearch" runat="server" CssClass="search-input w-100" placeholder="Bạn cần tìm laptop gì hôm nay?"></asp:TextBox>
+                        </asp:Panel>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                    <a href="GioHang.aspx" class="cart-btn text-decoration-none">
+                        <span class="material-symbols-outlined">shopping_cart</span>
+                        <span class="cart-count"><%= GetCartCount() %></span>
+                    </a>
+
+                    <asp:PlaceHolder ID="phAnonymous" runat="server">
+                        <a href="Login.aspx" class="cart-btn text-decoration-none">
+                            <span class="material-symbols-outlined">account_circle</span>
+                        </a>
+                    </asp:PlaceHolder>
+
+                    <asp:PlaceHolder ID="phLoggedIn" runat="server" Visible="false">
+                        <div class="dropdown">
+                            <button class="btn btn-light d-flex align-items-center gap-2 px-3 py-2 rounded-pill border-0 shadow-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <span class="material-symbols-outlined fs-5">person</span>
+                                <span class="fw-bold small">
+                                    <asp:Literal ID="ltrTenKH" runat="server"></asp:Literal></span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 p-2">
+                                <li><a class="dropdown-item rounded py-2" href="Profile.aspx">Cài đặt tài khoản</a></li>
+                                <asp:PlaceHolder ID="phAdmin" runat="server" Visible="false">
+                                    <li><a class="dropdown-item rounded py-2 text-primary fw-bold" href="../Admin/Dashboard.aspx">Trang quản trị</a></li>
+                                </asp:PlaceHolder>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><asp:LinkButton ID="lbtnLogout" runat="server" CssClass="dropdown-item rounded py-2 text-danger" OnClick="lbtnLogout_Click">Đăng xuất</asp:LinkButton></li>
+                            </ul>
+                        </div>
+                    </asp:PlaceHolder>
+                </div>
+            </div>
+        </header>
+
+        <nav class="nav-bar shadow-sm">
+            <div class="container h-100 d-flex align-items-center">
+                <a href="Default.aspx" class="nav-item-link active">Trang chủ</a>
+                <asp:Repeater ID="rptMenu" runat="server" DataSourceID="dsLoaiLaptop">
+                    <ItemTemplate>
+                        <a href='LaptopTheoLoai.aspx?MaLoai=<%# Eval("MaLoai") %>' class="nav-item-link"><%# Eval("TenLoai") %></a>
+                    </ItemTemplate>
+                </asp:Repeater>
+                <a href="#" class="nav-item-link text-danger ms-auto fw-bold">
+                    <span class="material-symbols-outlined fs-5 me-1">local_fire_department</span> Khuyến mãi hot
+                </a>
+            </div>
+        </nav>
+
+        <main style="min-height: 70vh; padding: 40px 0;">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server"></asp:ContentPlaceHolder>
+        </main>
+
+        <footer class="footer-modern">
+            <div class="container">
+                <div class="row g-5">
+                    <div class="col-lg-4">
+                        <div class="mb-4">
+                            <div class="brand-wrapper">
+                                <h1 class="brand-name">
+                                    LAPTOP<span class="zone-text">
+                                        <span class="highlight-z">Z</span><span class="one-text">ONE</span>
+                                    </span>
+                                </h1>
+                            </div>
+                        </div>
+                        <p class="text-slate-500 small mb-4" style="line-height: 1.8">
+                            LaptopZone là hệ thống bán lẻ các sản phẩm công nghệ cao cấp, chuyên cung cấp Laptop Gaming, Workstation và Macbook chính hãng với chế độ hậu mãi hàng đầu Việt Nam.
+                        </p>
+                        <div class="d-flex gap-2">
+                            <a href="#" class="cart-btn" style="width: 38px; height: 38px;"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="cart-btn" style="width: 38px; height: 38px;"><i class="fab fa-youtube"></i></a>
+                            <a href="#" class="cart-btn" style="width: 38px; height: 38px;"><i class="fab fa-tiktok"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-md-3 col-lg-2">
+                        <h4 class="footer-title">Khám phá</h4>
+                        <a href="Default.aspx" class="footer-link">Trang chủ</a>
+                        <a href="#" class="footer-link">Sản phẩm mới</a>
+                        <a href="#" class="footer-link">Tin công nghệ</a>
+                        <a href="Contact.aspx" class="footer-link">Liên hệ</a>
+                    </div>
+
+                    <div class="col-6 col-md-3 col-lg-2">
+                        <h4 class="footer-title">Hỗ trợ</h4>
+                        <a href="#" class="footer-link">Bảo hành 24/7</a>
+                        <a href="#" class="footer-link">Chính sách đổi trả</a>
+                        <a href="#" class="footer-link">Trả góp 0%</a>
+                        <a href="#" class="footer-link">Vận chuyển</a>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <h4 class="footer-title">Liên hệ hỗ trợ</h4>
+                        <div class="contact-item">
+                            <span class="material-symbols-outlined text-primary">call</span>
+                            <div>
+                                <p class="mb-0 text-muted small">Hotline tư vấn:</p>
+                                <a href="tel:0906891704" class="text-decoration-none fw-bold text-dark fs-5">0906.891.704</a>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <span class="material-symbols-outlined text-primary">location_on</span>
+                            <div class="small text-slate-600">52/18, Nguyễn Sỹ Sách, P. Tân Sơn, Quận Tân Bình, TP. Hồ Chí Minh</div>
+                        </div>
+                        <div class="contact-item">
+                            <span class="material-symbols-outlined text-primary">mail</span>
+                            <div class="small text-slate-600">support@laptopzone.vn</div>
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <div class="mt-5 pt-4 border-top d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+                    <p class="text-muted mb-0 small">© 2026 <strong>LaptopZone</strong>. Thiết kế bởi Thạch Hiền.</p>
+                    <div class="d-flex gap-4 grayscale opacity-50">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png" height="12">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1280px-Mastercard-logo.svg.png" height="12">
+                        <img src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" height="18">
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </form>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

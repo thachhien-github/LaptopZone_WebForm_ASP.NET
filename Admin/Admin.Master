@@ -1,0 +1,263 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Admin.master.cs" Inherits="LaptopZone_project.Admin.Admin" %>
+
+<!DOCTYPE html>
+<html lang="vi">
+<head runat="server">
+    <title>Admin Dashboard - LaptopZone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+
+        /* --- Updated High-Tech Logo for Admin Panel --- */
+        .brand-name-admin {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 20px;
+            letter-spacing: -1.2px;
+            color: #2d3436;
+            display: flex;
+            align-items: baseline;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        .highlight-z-admin {
+            font-size: 30px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00d2ff 0%, #0984e3 50%, #6c5ce7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+            filter: drop-shadow(0 2px 4px rgba(9, 132, 227, 0.2));
+            margin-left: 2px;
+        }
+
+        /* Chữ ONE: Gradient Blue đồng bộ nhận diện */
+        .one-text-admin {
+            background: linear-gradient(to bottom, #0984e3, #0773c5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+
+        /* Menu Active State */
+        .nav-item-active {
+            background-color: #f0f7ff;
+            color: #0984e3 !important;
+            border-right: 3px solid #0984e3;
+            font-weight: 600;
+        }
+        .nav-item-active span { font-variation-settings: 'FILL' 1; }
+
+        @keyframes ring {
+            0%, 100%, 50% { transform: rotate(0); }
+            10%, 30% { transform: rotate(15deg); }
+            20%, 40% { transform: rotate(-15deg); }
+        }
+        .animate-ring { animation: ring 1.5s ease infinite; }
+    </style>
+    <asp:ContentPlaceHolder ID="head" runat="server"></asp:ContentPlaceHolder>
+</head>
+<body class="bg-[#f8fafc] text-[#1e293b]">
+    <form id="form1" runat="server">
+        <div class="flex h-screen overflow-hidden">
+            <aside class="w-64 flex-shrink-0 border-r border-slate-200 bg-white flex flex-col h-full z-20 shadow-sm">
+                <div class="p-6 border-b border-slate-50">
+                    <a href="Dashboard.aspx" class="flex flex-col items-start no-underline group">
+                        <h1 class="brand-name-admin">
+                            LAPTOP<span class="flex items-baseline"><span class="highlight-z-admin">Z</span><span class="one-text-admin">ONE</span></span>
+                        </h1>
+                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1 ml-0.5">Admin Panel</p>
+                    </a>
+                </div>
+
+                <nav class="flex-1 px-3 py-6 flex flex-col gap-1 overflow-y-auto custom-scrollbar">
+                    <a href="Dashboard.aspx" id="nav_dash" runat="server" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-500 hover:bg-slate-50 transition-all group">
+                        <span class="material-symbols-outlined text-[22px] group-hover:scale-110 transition-transform">dashboard</span>
+                        <span class="text-[13px] font-medium">Tổng quan hệ thống</span>
+                    </a>
+
+                    <div class="pt-5 pb-2 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Quản lý cửa hàng</div>
+
+                    <a href="QuanLyLaptop.aspx" id="nav_laptop" runat="server" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-500 hover:bg-slate-50 transition-all group">
+                        <span class="material-symbols-outlined text-[22px]">laptop_chromebook</span>
+                        <span class="text-[13px] font-medium">Sản phẩm Laptop</span>
+                    </a>
+                    <a href="QuanLyLoai.aspx" id="nav_loai" runat="server" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-500 hover:bg-slate-50 transition-all">
+                        <span class="material-symbols-outlined text-[22px]">category</span>
+                        <span class="text-[13px] font-medium">Danh mục loại</span>
+                    </a>
+                    <a href="QuanLyHang.aspx" id="nav_hang" runat="server" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-500 hover:bg-slate-50 transition-all">
+                        <span class="material-symbols-outlined text-[22px]">factory</span>
+                        <span class="text-[13px] font-medium">Hãng sản xuất</span>
+                    </a>
+
+                    <div class="pt-5 pb-2 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Kinh doanh & Khách hàng</div>
+
+                    <a href="QuanLyKhachHang.aspx" id="nav_kh" runat="server" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-500 hover:bg-slate-50 transition-all">
+                        <span class="material-symbols-outlined text-[22px]">group</span>
+                        <span class="text-[13px] font-medium">Khách hàng</span>
+                    </a>
+                    <a href="QuanLyDonHang.aspx" id="nav_dh" runat="server" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-500 hover:bg-slate-50 transition-all relative group">
+                        <span class="material-symbols-outlined text-[22px]">shopping_cart</span>
+                        <span class="text-[13px] font-medium">Đơn hàng mới</span>
+                    </a>
+
+                    <div class="pt-5 pb-2 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Hệ thống</div>
+
+                    <a href="../Public/Default.aspx" id="nav_home" runat="server" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-500 hover:bg-slate-50 transition-all">
+                        <span class="material-symbols-outlined text-[22px]">storefront</span>
+                        <span class="text-[13px] font-medium">Xem trang bán hàng</span>
+                    </a>
+
+                    <div class="p-4 border-t border-slate-100 bg-slate-50/50 mt-auto">
+                        <asp:LinkButton ID="lbtnThoat" runat="server" OnClick="lbtnThoat_Click"
+                            CssClass="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-red-500 hover:bg-red-100/50 transition-all font-semibold text-sm">
+                            <span class="material-symbols-outlined text-[20px]">power_settings_new</span> 
+                            <span>Đăng xuất hệ thống</span>
+                        </asp:LinkButton>
+                    </div>
+                </nav>
+            </aside>
+
+            <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
+                <header class="h-16 flex items-center justify-between px-8 bg-white border-b border-slate-200 z-10">
+                    <div class="flex items-center gap-4">
+                        <div class="flex flex-col">
+                            <h2 class="text-sm font-bold text-slate-800 leading-none mb-1">
+                                <asp:Literal ID="ltrTitle" runat="server" Text="Dashboard" />
+                            </h2>
+                            <nav class="flex items-center gap-1 text-[10px] text-slate-400 uppercase tracking-tighter">
+                                <span>Hệ thống</span> <span class="material-symbols-outlined text-[12px]">chevron_right</span>
+                                <span class="text-[#0984e3] font-bold"><asp:Literal ID="ltrBreadcrumb" runat="server" /></span>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-6">
+                        <div class="relative">
+                            <button type="button" id="notificationBtn" class="p-2 text-slate-400 hover:bg-slate-100 hover:text-[#0984e3] rounded-full relative transition-all">
+                                <span class="material-symbols-outlined text-[26px]">notifications</span>
+                                <span id="badgeCount" class="absolute top-1 right-1 size-4 bg-red-500 text-white text-[9px] flex items-center justify-center rounded-full border-2 border-white hidden">0</span>
+                            </button>
+
+                            <div id="notificationDropdown" class="absolute right-0 mt-3 w-80 bg-white rounded-2xl shadow-2xl border border-slate-200 hidden overflow-hidden z-50 ring-1 ring-black ring-opacity-5">
+                                <div class="p-4 border-b border-slate-50 flex justify-between items-center bg-slate-50/50">
+                                    <h4 class="font-bold text-xs uppercase tracking-tight">Thông báo đơn hàng</h4>
+                                    <span class="text-[9px] bg-[#0984e3] text-white px-2 py-0.5 rounded-full font-bold">REALTIME</span>
+                                </div>
+                                <div id="notificationList" class="max-h-[380px] overflow-y-auto custom-scrollbar"></div>
+                                <a href="QuanLyDonHang.aspx" class="block p-3 text-center text-[11px] font-bold text-[#0984e3] hover:bg-blue-50 border-t border-slate-50 transition-colors">Xem tất cả giao dịch</a>
+                            </div>
+                        </div>
+
+                        <div class="h-8 w-[1px] bg-slate-200"></div>
+
+                        <div class="flex items-center gap-3">
+                            <div class="text-right hidden sm:block">
+                                <p class="text-[12px] font-bold text-slate-800"><asp:Literal ID="ltrAdminName" runat="server" /></p>
+                                <p class="text-[10px] text-emerald-500 font-medium flex items-center justify-end gap-1">
+                                    <span class="size-1.5 bg-emerald-500 rounded-full animate-pulse"></span>Online
+                                </p>
+                            </div>
+                            <div class="size-9 rounded-xl overflow-hidden ring-2 ring-slate-100 shadow-sm">
+                                <img src="https://ui-avatars.com/api/?name=Admin&background=2d3436&color=fff" class="size-full object-cover" />
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
+                    <asp:ContentPlaceHolder ID="MainContent" runat="server"></asp:ContentPlaceHolder>
+                </div>
+            </main>
+        </div>
+    </form>
+
+    <script>
+        // LOGIC UI DROP-DOWN
+        const notiBtn = document.getElementById('notificationBtn');
+        const notiDropdown = document.getElementById('notificationDropdown');
+        notiBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            notiDropdown.classList.toggle('hidden');
+        });
+        document.addEventListener('click', () => notiDropdown.classList.add('hidden'));
+
+        // REALTIME NOTIFICATIONS LOGIC
+        let lastOrderCount = parseInt(sessionStorage.getItem('lastCount')) || 0;
+        let clickedOrders = JSON.parse(sessionStorage.getItem('clickedOrders')) || [];
+
+        function checkNewOrders() {
+            fetch(window.location.pathname + '/GetNewOrders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json; charset=utf-8' },
+                body: JSON.stringify({})
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.d || data.d.error) return;
+                    const allOrdersFromDB = data.d;
+                    const activeOrders = allOrdersFromDB.filter(o => !clickedOrders.includes(o.ID));
+
+                    const badge = document.getElementById('badgeCount');
+                    const badgeSide = document.getElementById('badgeSideCount');
+                    const list = document.getElementById('notificationList');
+                    const icon = notiBtn.querySelector('.material-symbols-outlined');
+
+                    if (activeOrders.length > 0) {
+                        if (activeOrders.length > lastOrderCount) {
+                            icon.classList.add('animate-ring');
+                            new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3').play().catch(() => { });
+                            setTimeout(() => icon.classList.remove('animate-ring'), 5000);
+                        }
+                        lastOrderCount = activeOrders.length;
+                        sessionStorage.setItem('lastCount', lastOrderCount);
+
+                        [badge, badgeSide].forEach(b => { if (b) { b.innerText = activeOrders.length; b.classList.remove('hidden'); } });
+
+                        list.innerHTML = activeOrders.map(o => `
+                        <a href="QuanLyDonHang.aspx?SoDH=${o.ID}" class="flex items-center gap-4 p-4 hover:bg-blue-50/40 transition-all border-b border-slate-50 group" onclick="markAsReadLocal('${o.ID}', event)">
+                            <div class="size-10 bg-blue-50 text-[#0984e3] rounded-xl flex items-center justify-center shrink-0 group-hover:bg-[#0984e3] group-hover:text-white transition-colors">
+                                <span class="material-symbols-outlined text-xl">shopping_bag</span>
+                            </div>
+                            <div class="min-w-0">
+                                <p class="text-[12px] font-bold text-slate-800">Đơn hàng #${o.ID} mới</p>
+                                <p class="text-[11px] text-slate-500 truncate font-medium">${o.User}</p>
+                                <p class="text-[9px] text-[#0984e3] mt-1 font-bold italic">${o.Time}</p>
+                            </div>
+                        </a>`).join('');
+                    } else {
+                        [badge, badgeSide].forEach(b => b && b.classList.add('hidden'));
+                        list.innerHTML = `<div class="p-10 text-center"><span class="material-symbols-outlined text-4xl text-slate-200">check_circle</span><p class="text-slate-400 text-[11px] mt-2 font-medium">Không có đơn hàng tồn đọng</p></div>`;
+                        lastOrderCount = 0;
+                        sessionStorage.setItem('lastCount', 0);
+                    }
+                });
+        }
+
+        function markAsReadLocal(id, event) {
+            if (!clickedOrders.includes(id)) {
+                clickedOrders.push(id);
+                sessionStorage.setItem('clickedOrders', JSON.stringify(clickedOrders));
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            setTimeout(checkNewOrders, 1000);
+            setInterval(checkNewOrders, 15000);
+        });
+    </script>
+</body>
+</html>
