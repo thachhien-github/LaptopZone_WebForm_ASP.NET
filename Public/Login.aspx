@@ -10,7 +10,7 @@
                 <div class="col-lg-11 col-xl-10 shadow-2xl rounded-4 overflow-hidden d-flex flex-column flex-lg-row bg-white border-0">
 
                     <div class="d-none d-lg-flex flex-column justify-content-between p-5 text-white position-relative overflow-hidden side-panel" style="width: 45%;">
-                        <img src="https://images.unsplash.com/photo-1593642632823-8f785ba67e45?q=80&w=1000&auto=format&fit=crop"
+                        <img src="https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?q=80&w=1000"
                             alt="Technology Workspace" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover transition-transform duration-1000" id="heroImage" />
                         <div class="overlay position-absolute top-0 start-0 w-100 h-100"></div>
 
