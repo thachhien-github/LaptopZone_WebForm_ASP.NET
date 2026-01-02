@@ -248,7 +248,7 @@
                 <div class="info-box">
                     <h3>ĐƠN VỊ CUNG CẤP</h3>
                     <div class="info-content">
-                        <strong>LAPTOPZONE TECHNOLOGY STORE</strong>
+                        <strong>LAPTOPZONE</strong>
                         Địa chỉ: 52/18 Nguyễn Sỹ Sách, P. Tân Sơn, TP. HCM<br />
                         Hotline: 0906.891.704<br />
                         Website: www.laptopzone.vn
@@ -282,15 +282,31 @@
                 <div class="summary-container">
                     <div class="summary-row">
                         <span>Giá trị đơn hàng:</span>
-                        <span style="font-weight: 600; color: #0f172a;"><asp:Literal ID="ltrTongTienHang" runat="server" /></span>
+                        <span style="font-weight: 600; color: #0f172a;">
+                            <asp:Literal ID="ltrTongTienHang" runat="server" />
+                        </span>
                     </div>
+
+                    <div class="summary-row">
+                        <span>Thuế VAT (10%):</span>
+                        <span style="font-weight: 600; color: #0f172a;">
+                            <asp:Literal ID="ltrVAT" runat="server" />
+                        </span>
+                    </div>
+
                     <div class="summary-row">
                         <span>Vận chuyển (Express):</span>
                         <span style="color: #10b981; font-weight: 700;">MIỄN PHÍ</span>
                     </div>
+
                     <div class="summary-row total-row">
-                        <span>TỔNG CỘNG:</span>
-                        <span class="total-price"><asp:Literal ID="ltrTongTien" runat="server" /></span>
+                        <div d-flex flex-column>
+                            <span>TỔNG CỘNG:</span>
+                            <div style="font-size: 10px; font-weight: 400; color: #64748b; margin-top: -5px;">(Đã bao gồm thuế VAT)</div>
+                        </div>
+                        <span class="total-price">
+                            <asp:Literal ID="ltrTongTien" runat="server" />
+                        </span>
                     </div>
                 </div>
             </div>

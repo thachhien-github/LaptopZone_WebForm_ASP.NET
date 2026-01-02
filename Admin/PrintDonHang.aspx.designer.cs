@@ -87,6 +87,15 @@ namespace LaptopZone_project.Admin
         protected global::System.Web.UI.WebControls.Literal ltrTongTienHang;
 
         /// <summary>
+        /// ltrVAT control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrVAT;
+
+        /// <summary>
         /// ltrTongTien control.
         /// </summary>
         /// <remarks>

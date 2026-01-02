@@ -38,11 +38,10 @@ namespace LaptopZone_project.Admin
         {
             using (SqlConnection con = new SqlConnection(connString))
             {
-                // JOIN với bảng KhachHang để lấy thông tin người nhận
                 string sql = @"SELECT d.SoDH, d.NgayDH, d.TriGia, k.HoTenKH, k.DienThoai, k.DiaChi 
-                               FROM DonDatHang d 
-                               JOIN KhachHang k ON d.MaKH = k.MaKH 
-                               WHERE d.SoDH = @SoDH";
+                       FROM DonDatHang d 
+                       JOIN KhachHang k ON d.MaKH = k.MaKH 
+                       WHERE d.SoDH = @SoDH";
 
                 SqlCommand cmd = new SqlCommand(sql, con);
                 cmd.Parameters.AddWithValue("@SoDH", soDH);
@@ -50,16 +49,23 @@ namespace LaptopZone_project.Admin
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.Read())
                 {
-                    // Đổ dữ liệu vào các Literal/Label trên trang PrintDonHang.aspx
                     ltrSoDH.Text = dr["SoDH"].ToString();
                     ltrNgayDH.Text = string.Format("{0:dd/MM/yyyy HH:mm}", dr["NgayDH"]);
                     ltrTenKH.Text = dr["HoTenKH"].ToString();
                     ltrSDT.Text = dr["DienThoai"].ToString();
                     ltrDiaChi.Text = dr["DiaChi"].ToString();
 
-                    decimal tongTien = Convert.ToDecimal(dr["TriGia"]);
-                    ltrTongTienHang.Text = tongTien.ToString("N0") + " đ";
-                    ltrTongTien.Text = tongTien.ToString("N0") + " đ";
+                    // Lấy tổng trị giá (Giả định TriGia trong DB là số tiền cuối cùng đã có VAT)
+                    decimal tongCong = Convert.ToDecimal(dr["TriGia"]);
+
+                    // Tính ngược lại tiền hàng và VAT
+                    // Tiền hàng = Tổng / 1.1
+                    decimal tamTinh = tongCong / 1.1m;
+                    decimal vat = tongCong - tamTinh;
+
+                    ltrTongTienHang.Text = tamTinh.ToString("N0") + " đ";
+                    ltrVAT.Text = vat.ToString("N0") + " đ"; // Thêm dòng này
+                    ltrTongTien.Text = tongCong.ToString("N0") + " đ";
                 }
             }
         }
