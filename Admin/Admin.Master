@@ -195,9 +195,8 @@
         });
         document.addEventListener('click', () => notiDropdown.classList.add('hidden'));
 
-        // REALTIME NOTIFICATIONS LOGIC
-        let lastOrderCount = parseInt(sessionStorage.getItem('lastCount')) || 0;
-        let clickedOrders = JSON.parse(sessionStorage.getItem('clickedOrders')) || [];
+        // REALTIME NOTIFICATIONS LOGIC - UPDATED
+        let lastMaxOrderId = sessionStorage.getItem('lastMaxOrderId') || 0;
 
         function checkNewOrders() {
             fetch(window.location.pathname + '/GetNewOrders', {
@@ -207,56 +206,53 @@
             })
                 .then(res => res.json())
                 .then(data => {
-                    if (!data.d || data.d.error) return;
-                    const allOrdersFromDB = data.d;
-                    const activeOrders = allOrdersFromDB.filter(o => !clickedOrders.includes(o.ID));
+                    if (!data.d || data.d.error || data.d.length === 0) return;
+
+                    const allOrders = data.d;
+                    // Lấy ID lớn nhất trong danh sách trả về (Đơn mới nhất)
+                    const currentMaxId = Math.max(...allOrders.map(o => parseInt(o.ID)));
 
                     const badge = document.getElementById('badgeCount');
-                    const badgeSide = document.getElementById('badgeSideCount');
                     const list = document.getElementById('notificationList');
-                    const icon = notiBtn.querySelector('.material-symbols-outlined');
+                    const icon = document.getElementById('notificationBtn').querySelector('.material-symbols-outlined');
 
-                    if (activeOrders.length > 0) {
-                        if (activeOrders.length > lastOrderCount) {
-                            icon.classList.add('animate-ring');
-                            new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3').play().catch(() => { });
-                            setTimeout(() => icon.classList.remove('animate-ring'), 5000);
-                        }
-                        lastOrderCount = activeOrders.length;
-                        sessionStorage.setItem('lastCount', lastOrderCount);
+                    // HIỆN SỐ LƯỢNG: Luôn hiện tổng đơn chưa xử lý
+                    badge.innerText = allOrders.length;
+                    badge.classList.remove('hidden');
 
-                        [badge, badgeSide].forEach(b => { if (b) { b.innerText = activeOrders.length; b.classList.remove('hidden'); } });
+                    // LOGIC NỔ CHUÔNG: Chỉ nổ khi ID mới nhất lớn hơn ID cũ đã lưu
+                    if (lastMaxOrderId !== 0 && currentMaxId > lastMaxOrderId) {
+                        icon.classList.add('animate-ring');
+                        new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3').play().catch(() => { });
 
-                        list.innerHTML = activeOrders.map(o => `
-                        <a href="QuanLyDonHang.aspx?SoDH=${o.ID}" class="flex items-center gap-4 p-4 hover:bg-blue-50/40 transition-all border-b border-slate-50 group" onclick="markAsReadLocal('${o.ID}', event)">
-                            <div class="size-10 bg-blue-50 text-[#0984e3] rounded-xl flex items-center justify-center shrink-0 group-hover:bg-[#0984e3] group-hover:text-white transition-colors">
-                                <span class="material-symbols-outlined text-xl">shopping_bag</span>
-                            </div>
-                            <div class="min-w-0">
-                                <p class="text-[12px] font-bold text-slate-800">Đơn hàng #${o.ID} mới</p>
-                                <p class="text-[11px] text-slate-500 truncate font-medium">${o.User}</p>
-                                <p class="text-[9px] text-[#0984e3] mt-1 font-bold italic">${o.Time}</p>
-                            </div>
-                        </a>`).join('');
-                    } else {
-                        [badge, badgeSide].forEach(b => b && b.classList.add('hidden'));
-                        list.innerHTML = `<div class="p-10 text-center"><span class="material-symbols-outlined text-4xl text-slate-200">check_circle</span><p class="text-slate-400 text-[11px] mt-2 font-medium">Không có đơn hàng tồn đọng</p></div>`;
-                        lastOrderCount = 0;
-                        sessionStorage.setItem('lastCount', 0);
+                        // Tạo một thông báo trình duyệt (nếu muốn)
+                        console.log("Có đơn hàng mới: #" + currentMaxId);
+
+                        setTimeout(() => icon.classList.remove('animate-ring'), 5000);
                     }
+
+                    // Cập nhật lại ID lớn nhất vào bộ nhớ
+                    lastMaxOrderId = currentMaxId;
+                    sessionStorage.setItem('lastMaxOrderId', lastMaxOrderId);
+
+                    // Render danh sách
+                    list.innerHTML = allOrders.map(o => `
+            <a href="QuanLyDonHang.aspx?SoDH=${o.ID}" class="flex items-center gap-4 p-4 hover:bg-blue-50/40 transition-all border-b border-slate-50 group">
+                <div class="size-10 bg-blue-50 text-[#0984e3] rounded-xl flex items-center justify-center shrink-0 group-hover:bg-[#0984e3] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-xl">shopping_bag</span>
+                </div>
+                <div class="min-w-0">
+                    <p class="text-[12px] font-bold text-slate-800">Đơn hàng #${o.ID} mới</p>
+                    <p class="text-[11px] text-slate-500 truncate font-medium">${o.User}</p>
+                    <p class="text-[9px] text-[#0984e3] mt-1 font-bold italic">${o.Time}</p>
+                </div>
+            </a>`).join('');
                 });
         }
 
-        function markAsReadLocal(id, event) {
-            if (!clickedOrders.includes(id)) {
-                clickedOrders.push(id);
-                sessionStorage.setItem('clickedOrders', JSON.stringify(clickedOrders));
-            }
-        }
-
         document.addEventListener("DOMContentLoaded", () => {
-            setTimeout(checkNewOrders, 1000);
-            setInterval(checkNewOrders, 15000);
+            checkNewOrders(); // Chạy ngay khi load
+            setInterval(checkNewOrders, 10000); // Check mỗi 10s cho đỡ tốn tài nguyên
         });
     </script>
 </body>
