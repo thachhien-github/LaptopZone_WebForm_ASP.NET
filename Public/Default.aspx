@@ -1,6 +1,51 @@
 ﻿<%@ Page Title="LaptopZone - trang chủ" Language="C#" MasterPageFile="~/Public/Site.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="LaptopZone_project.Public.Default" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
+    <div class="container mt-4 mb-2">
+        <div id="heroCarousel" class="carousel slide shadow-sm rounded-4 overflow-hidden" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+            </div>
+            <div class="carousel-inner">
+                <div class="carousel-item active" style="height: 400px;">
+                    <img src="https://images.unsplash.com/photo-1603302576837-37561b2e2302?q=80&w=2068&auto=format&fit=crop" class="d-block w-100 h-100 object-fit-cover" alt="Gaming Laptop">
+                    <div class="carousel-caption d-none d-md-block text-start" style="bottom: 20%; left: 8%;">
+                        <span class="badge bg-danger mb-2 px-3 py-2 rounded-pill">GAMING REVOLUTION</span>
+                        <h2 class="display-5 fw-bold text-white shadow-sm" style="font-family: 'Montserrat', sans-serif;">ĐẲNG CẤP GAMING</h2>
+                        <p class="fs-5">Chiến game cực đỉnh với RTX 40-Series mới nhất.</p>
+                        <a href="LaptopTheoLoai.aspx?MaLoai=1" class="btn btn-primary btn-lg rounded-3 fw-bold px-4 mt-2 border-0" style="background: #2563eb;">Sắm Ngay</a>
+                    </div>
+                </div>
+                <div class="carousel-item" style="height: 400px;">
+                    <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=1926&auto=format&fit=crop" class="d-block w-100 h-100 object-fit-cover" alt="Macbook">
+                    <div class="carousel-caption d-none d-md-block text-end" style="bottom: 20%; right: 8%;">
+                        <h2 class="display-5 fw-bold text-dark">MACBOOK M3 PRO</h2>
+                        <asp:CheckBoxList ID="CheckBoxList1" runat="server" AutoPostBack="true" OnSelectedIndexChanged="Filter_Changed"
+                            CssClass="custom-checkbox-list" RepeatLayout="UnorderedList">
+                        </asp:CheckBoxList>
+                        <p class="fs-5 text-secondary">Thiết kế mỏng nhẹ, hiệu năng không giới hạn.</p>
+                        <button class="btn btn-dark btn-lg rounded-3 px-5">Tìm hiểu thêm</button>
+                    </div>
+                </div>
+                <div class="carousel-item" style="height: 400px;">
+                    <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=2071&auto=format&fit=crop" class="d-block w-100 h-100 object-fit-cover" alt="Workstation">
+                    <div class="carousel-caption d-none d-md-block" style="bottom: 25%;">
+                        <h2 class="display-4 fw-bold">GIẢM ĐẾN 30%</h2>
+                        <p class="fs-5">Duy nhất tuần lễ vàng - Miễn phí vận chuyển toàn quốc.</p>
+                        <button class="btn btn-warning btn-lg rounded-3 px-5 fw-bold">Săn Sale Ngay</button>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+        </div>
+    </div>
     <div class="bg-[#f3f4f6] min-h-screen pb-12">
         <div class="bg-white border-b border-slate-200 shadow-sm">
             <div class="container py-2 text-xs text-slate-500 d-flex align-items-center gap-2">
@@ -108,7 +153,7 @@
                                                     <div class="d-flex align-items-baseline gap-1">
                                                         <span class="fw-bold text-primary fs-4" style="color: #2563eb !important;">
                                                             <%# Eval("Gia", "{0:N0}") %>
-        </span>
+                                                        </span>
                                                         <span class="text-primary fw-bold" style="font-size: 14px;">₫</span>
                                                     </div>
 
@@ -116,9 +161,9 @@
                                                     <div class="d-flex align-items-center gap-2">
                                                         <span class="text-muted text-decoration-line-through small">
                                                             <%# string.Format("{0:N0}", Convert.ToDouble(Eval("Gia")) * 1.1) %> ₫
-        </span>
+                                                        </span>
                                                         <span class="badge bg-danger">-10%
-        </span>
+                                                        </span>
                                                     </div>
                                                 </div>
 
@@ -272,6 +317,30 @@
         .product-sold-out:hover {
             transform: none !important;
             box-shadow: none !important;
+        }
+
+        /* Custom Carousel */
+        #heroCarousel .carousel-item {
+            transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1); /* Chuyển slide mượt hơn */
+        }
+
+        #heroCarousel .carousel-caption {
+            z-index: 2;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3); /* Giúp chữ nổi bật trên ảnh */
+        }
+
+        /* Hiệu ứng zoom nhẹ cho ảnh trong slide */
+        #heroCarousel .carousel-item img {
+            transition: transform 10s linear;
+        }
+
+        #heroCarousel .carousel-item.active img {
+            transform: scale(1.1);
+        }
+
+        /* Bo góc cho Carousel khớp với bộ lọc và card sản phẩm */
+        .rounded-4 {
+            border-radius: 1rem !important;
         }
     </style>
 </asp:Content>
