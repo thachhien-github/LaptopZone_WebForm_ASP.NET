@@ -70,7 +70,7 @@
                     <div class="row g-3">
                         <asp:Repeater ID="rptLaptops" runat="server">
                             <ItemTemplate>
-                                <div class="col-xl-4 col-md-6 mb-4">
+                                <div class="col-xl-4 col-md-6 mb-1">
                                     <div class="product-card group h-100 position-relative d-flex flex-column bg-white rounded-4 overflow-hidden shadow-sm <%# Convert.ToInt32(Eval("SoLuong")) <= 0 ? "product-sold-out" : "" %>">
 
                                         <%# Convert.ToInt32(Eval("SoLuong")) <= 0 ? "<div class='sold-out-overlay'><span>HẾT HÀNG</span></div>" : "" %>

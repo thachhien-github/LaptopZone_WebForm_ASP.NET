@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="LaptopZone - trang chủ" Language="C#" MasterPageFile="~/Public/Site.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="LaptopZone_project.Public.Default" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
-    <div class="container mt-4 mb-2">
+    <div class="container mt-2 mb-2">
         <div id="heroCarousel" class="carousel slide shadow-sm rounded-4 overflow-hidden" data-bs-ride="carousel">
             <div class="carousel-indicators">
                 <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
@@ -117,7 +117,7 @@
                     <div class="row g-3">
                         <asp:Repeater ID="rptLaptops" runat="server">
                             <ItemTemplate>
-                                <div class="col-xl-4 col-md-6 mb-4">
+                                <div class="col-xl-4 col-md-6 mb-1">
                                     <div class="product-card group h-100 position-relative d-flex flex-column bg-white rounded-4 overflow-hidden shadow-sm <%# Convert.ToInt32(Eval("SoLuong")) <= 0 ? "product-sold-out" : "" %>">
 
                                         <%# Convert.ToInt32(Eval("SoLuong")) <= 0 ? "<div class='sold-out-overlay'><span>HẾT HÀNG</span></div>" : "" %>
@@ -207,7 +207,6 @@
     </div>
 
     <style>
-        /* CSS Giữ nguyên như cũ */
         .custom-checkbox-list {
             list-style: none;
             padding: 0;
@@ -276,12 +275,11 @@
 
         /* Lớp phủ khi hết hàng */
         .product-sold-out {
-            opacity: 0.7; /* Làm mờ card */
-            filter: grayscale(0.4); /* Giảm độ tươi của màu sắc */
-            pointer-events: none; /* Ngăn tương tác vào các link bên trong nếu cần */
+            opacity: 0.7;
+            filter: grayscale(0.4);
+            pointer-events: none;
         }
 
-            /* Kích hoạt lại tương tác cho nút xem chi tiết dù card bị mờ */
             .product-sold-out a, .product-sold-out .p-4 {
                 pointer-events: auto;
             }
@@ -301,7 +299,7 @@
         }
 
             .sold-out-overlay span {
-                background: rgba(30, 41, 59, 0.9); /* Màu Slate-800 */
+                background: rgba(30, 41, 59, 0.9);
                 color: white;
                 padding: 8px 20px;
                 border-radius: 99px;
@@ -321,15 +319,14 @@
 
         /* Custom Carousel */
         #heroCarousel .carousel-item {
-            transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1); /* Chuyển slide mượt hơn */
+            transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
         #heroCarousel .carousel-caption {
             z-index: 2;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3); /* Giúp chữ nổi bật trên ảnh */
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
-        /* Hiệu ứng zoom nhẹ cho ảnh trong slide */
         #heroCarousel .carousel-item img {
             transition: transform 10s linear;
         }
@@ -338,9 +335,8 @@
             transform: scale(1.1);
         }
 
-        /* Bo góc cho Carousel khớp với bộ lọc và card sản phẩm */
         .rounded-4 {
-            border-radius: 1rem !important;
+            border-radius: 0.75rem !important;
         }
     </style>
 </asp:Content>

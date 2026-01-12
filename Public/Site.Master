@@ -32,7 +32,6 @@
             color: var(--slate-900);
         }
 
-        /* --- Cập nhật Logo theo nhận diện mới --- */
         .brand-wrapper {
             text-decoration: none !important;
             display: inline-flex;
@@ -62,7 +61,6 @@
             margin-left: 4px;
         }
 
-        /* Chữ Z: Gradient rực rỡ */
         .highlight-z {
             font-size: 44px;
             font-weight: 900;
@@ -73,7 +71,6 @@
             filter: drop-shadow(0 2px 6px rgba(9, 132, 227, 0.2));
         }
 
-        /* Chữ ONE: Gradient Blue chuẩn hóa đơn */
         .one-text {
             background: linear-gradient(to bottom, #0984e3, #0773c5);
             -webkit-background-clip: text;
@@ -82,7 +79,6 @@
             font-weight: 800;
         }
 
-        /* --- Giữ nguyên các Style khác của bạn --- */
         .header-main {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -279,7 +275,7 @@
             </div>
         </nav>
 
-        <main style="min-height: 70vh; padding: 40px 0;">
+        <main style="min-height: 70vh; padding: 15px 0;">
             <asp:ContentPlaceHolder ID="MainContent" runat="server"></asp:ContentPlaceHolder>
         </main>
 
