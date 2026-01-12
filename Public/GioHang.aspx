@@ -15,8 +15,8 @@
         <div class="container py-8">
             <asp:UpdatePanel ID="upCart" runat="server">
                 <ContentTemplate>
-                    <h1 class="fs-2 fw-extrabold text-slate-900 mb-4 d-flex align-items-baseline gap-2">
-                        Giỏ hàng <span class="fs-6 fw-normal text-slate-500">(<asp:Literal ID="ltrCount" runat="server">0</asp:Literal> sản phẩm)</span>
+                    <h1 class="fs-2 fw-extrabold text-slate-900 mb-4 d-flex align-items-baseline gap-2">Giỏ hàng <span class="fs-6 fw-normal text-slate-500">(<asp:Literal ID="ltrCount" runat="server">0</asp:Literal>
+                        sản phẩm)</span>
                     </h1>
 
                     <asp:PlaceHolder ID="phEmptyCart" runat="server" Visible="false">
@@ -114,7 +114,8 @@
                                         <span class="fw-bold text-slate-900">Tổng cộng</span>
                                         <div class="text-end">
                                             <div class="fs-3 fw-black text-primary tracking-tight">
-                                                <asp:Literal ID="ltrTongCong" runat="server"></asp:Literal>₫</div>
+                                                <asp:Literal ID="ltrTongCong" runat="server"></asp:Literal>₫
+                                            </div>
                                             <div class="text-slate-400" style="font-size: 10px;">Đã bao gồm VAT</div>
                                         </div>
                                     </div>
@@ -158,12 +159,37 @@
 
     <style>
         /* Các style giữ nguyên như cũ */
-        .fs-xs { font-size: 0.75rem; }
-        .fs-sm { font-size: 0.875rem; }
-        .fw-extrabold { font-weight: 800; }
-        .fw-black { font-weight: 900; }
-        .hover-text-danger:hover { color: #ef4444 !important; background-color: #fef2f2; }
-        .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
-        .group:hover .group-hover-translate-x { transform: translateX(4px); transition: transform 0.2s; }
+        .fs-xs {
+            font-size: 0.75rem;
+        }
+
+        .fs-sm {
+            font-size: 0.875rem;
+        }
+
+        .fw-extrabold {
+            font-weight: 800;
+        }
+
+        .fw-black {
+            font-weight: 900;
+        }
+
+        .hover-text-danger:hover {
+            color: #ef4444 !important;
+            background-color: #fef2f2;
+        }
+
+        .line-clamp-1 {
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .group:hover .group-hover-translate-x {
+            transform: translateX(4px);
+            transition: transform 0.2s;
+        }
     </style>
 </asp:Content>
