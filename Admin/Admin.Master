@@ -9,7 +9,9 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
 
         /* --- Updated High-Tech Logo for Admin Panel --- */
         .brand-name-admin {
@@ -45,7 +47,10 @@
         }
 
         /* Custom Scrollbar */
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+
         .custom-scrollbar::-webkit-scrollbar-thumb {
             background: #e2e8f0;
             border-radius: 10px;
@@ -58,14 +63,28 @@
             border-right: 3px solid #0984e3;
             font-weight: 600;
         }
-        .nav-item-active span { font-variation-settings: 'FILL' 1; }
+
+            .nav-item-active span {
+                font-variation-settings: 'FILL' 1;
+            }
 
         @keyframes ring {
-            0%, 100%, 50% { transform: rotate(0); }
-            10%, 30% { transform: rotate(15deg); }
-            20%, 40% { transform: rotate(-15deg); }
+            0%, 100%, 50% {
+                transform: rotate(0);
+            }
+
+            10%, 30% {
+                transform: rotate(15deg);
+            }
+
+            20%, 40% {
+                transform: rotate(-15deg);
+            }
         }
-        .animate-ring { animation: ring 1.5s ease infinite; }
+
+        .animate-ring {
+            animation: ring 1.5s ease infinite;
+        }
     </style>
     <asp:ContentPlaceHolder ID="head" runat="server"></asp:ContentPlaceHolder>
 </head>
@@ -75,8 +94,7 @@
             <aside class="w-64 flex-shrink-0 border-r border-slate-200 bg-white flex flex-col h-full z-20 shadow-sm">
                 <div class="p-6 border-b border-slate-50">
                     <a href="Dashboard.aspx" class="flex flex-col items-start no-underline group">
-                        <h1 class="brand-name-admin">
-                            LAPTOP<span class="flex items-baseline"><span class="highlight-z-admin">Z</span><span class="one-text-admin">ONE</span></span>
+                        <h1 class="brand-name-admin">LAPTOP<span class="flex items-baseline"><span class="highlight-z-admin">Z</span><span class="one-text-admin">ONE</span></span>
                         </h1>
                         <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1 ml-0.5">Admin Panel</p>
                     </a>
@@ -140,7 +158,8 @@
                             </h2>
                             <nav class="flex items-center gap-1 text-[10px] text-slate-400 uppercase tracking-tighter">
                                 <span>Hệ thống</span> <span class="material-symbols-outlined text-[12px]">chevron_right</span>
-                                <span class="text-[#0984e3] font-bold"><asp:Literal ID="ltrBreadcrumb" runat="server" /></span>
+                                <span class="text-[#0984e3] font-bold">
+                                    <asp:Literal ID="ltrBreadcrumb" runat="server" /></span>
                             </nav>
                         </div>
                     </div>
@@ -166,7 +185,8 @@
 
                         <div class="flex items-center gap-3">
                             <div class="text-right hidden sm:block">
-                                <p class="text-[12px] font-bold text-slate-800"><asp:Literal ID="ltrAdminName" runat="server" /></p>
+                                <p class="text-[12px] font-bold text-slate-800">
+                                    <asp:Literal ID="ltrAdminName" runat="server" /></p>
                                 <p class="text-[10px] text-emerald-500 font-medium flex items-center justify-end gap-1">
                                     <span class="size-1.5 bg-emerald-500 rounded-full animate-pulse"></span>Online
                                 </p>
@@ -196,7 +216,39 @@
         document.addEventListener('click', () => notiDropdown.classList.add('hidden'));
 
         // REALTIME NOTIFICATIONS LOGIC - UPDATED
-        let lastMaxOrderId = sessionStorage.getItem('lastMaxOrderId') || 0;
+        let lastMaxOrderId = parseInt(sessionStorage.getItem('lastMaxOrderId') || '0', 10) || 0;
+
+        // Audio: trình duyệt thường chặn autoplay nếu chưa có "user gesture"
+        const bellAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+        bellAudio.preload = 'auto';
+        let isAudioUnlocked = false;
+
+        async function unlockAudioOnce() {
+            if (isAudioUnlocked) return;
+            try {
+                // Thử "warm up" audio bằng 1 lần play/pause (muted) sau user gesture
+                bellAudio.muted = true;
+                await bellAudio.play();
+                bellAudio.pause();
+                bellAudio.currentTime = 0;
+                bellAudio.muted = false;
+                isAudioUnlocked = true;
+                console.log('[noti] audio unlocked');
+            } catch (e) {
+                // Nếu vẫn bị chặn, lần sau click khác sẽ thử lại
+                console.warn('[noti] audio unlock failed:', e);
+            }
+        }
+
+        function playBell() {
+            if (!isAudioUnlocked) return; // chưa unlock thì bỏ qua (tránh spam lỗi)
+            try {
+                bellAudio.currentTime = 0;
+                bellAudio.play().catch((e) => console.warn('[noti] bell play blocked:', e));
+            } catch (e) {
+                console.warn('[noti] bell play error:', e);
+            }
+        }
 
         function checkNewOrders() {
             fetch(window.location.pathname + '/GetNewOrders', {
@@ -223,7 +275,7 @@
                     // LOGIC NỔ CHUÔNG: Chỉ nổ khi ID mới nhất lớn hơn ID cũ đã lưu
                     if (lastMaxOrderId !== 0 && currentMaxId > lastMaxOrderId) {
                         icon.classList.add('animate-ring');
-                        new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3').play().catch(() => { });
+                        playBell();
 
                         // Tạo một thông báo trình duyệt (nếu muốn)
                         console.log("Có đơn hàng mới: #" + currentMaxId);
@@ -251,6 +303,10 @@
         }
 
         document.addEventListener("DOMContentLoaded", () => {
+            // Thử unlock audio ngay khi user click lần đầu ở bất kỳ đâu
+            document.addEventListener('click', unlockAudioOnce, { capture: true, once: false });
+            // Click vào chuông cũng sẽ unlock (trường hợp user chỉ tương tác ở đây)
+            notiBtn.addEventListener('click', unlockAudioOnce);
             checkNewOrders(); // Chạy ngay khi load
             setInterval(checkNewOrders, 10000); // Check mỗi 10s cho đỡ tốn tài nguyên
         });
