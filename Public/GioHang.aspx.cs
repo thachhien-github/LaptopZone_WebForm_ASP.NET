@@ -31,19 +31,32 @@ namespace LaptopZone_project.Public
                     rptGioHang.DataSource = dt;
                     rptGioHang.DataBind();
 
-                    // Tính toán tiền
+                    // 1. Tính toán tiền
                     decimal tamTinh = dt.AsEnumerable().Sum(row => row.Field<decimal>("ThanhTien"));
                     decimal vat = tamTinh * 0.1m;
                     decimal tongCong = tamTinh + vat;
 
-                    ltrCount.Text = dt.Rows.Count.ToString();
+                    // 2. Tính tổng số lượng thực tế (ví dụ: 2 máy Dell + 1 máy HP = 3)
+                    int tongSoLuong = dt.AsEnumerable().Sum(row => row.Field<int>("SoLuong"));
+
+                    ltrCount.Text = tongSoLuong.ToString(); // Cập nhật chữ trong trang GioHang
                     ltrTamTinh.Text = tamTinh.ToString("N0");
                     ltrVAT.Text = vat.ToString("N0");
                     ltrTongCong.Text = tongCong.ToString("N0");
+
+                    // 3. GỬI LỆNH CẬP NHẬT RA HEADER (MASTER PAGE)
+                    string script = string.Format("updateMasterCartCount('{0}');", tongSoLuong);
+                    ScriptManager.RegisterStartupScript(this, GetType(), "UpdateCartCount", script, true);
                 }
-                else { ShowEmpty(); }
+                else { ShowEmpty(); UpdateMasterCountZero(); }
             }
-            else { ShowEmpty(); }
+            else { ShowEmpty(); UpdateMasterCountZero(); }
+        }
+
+        // Hàm bổ trợ để reset Master về 0 khi giỏ trống
+        private void UpdateMasterCountZero()
+        {
+            ScriptManager.RegisterStartupScript(this, GetType(), "UpdateCartCount", "updateMasterCartCount('0');", true);
         }
 
         private void ShowEmpty()

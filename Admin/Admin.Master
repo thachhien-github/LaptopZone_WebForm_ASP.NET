@@ -168,7 +168,7 @@
                         <div class="relative">
                             <button type="button" id="notificationBtn" class="p-2 text-slate-400 hover:bg-slate-100 hover:text-[#0984e3] rounded-full relative transition-all">
                                 <span class="material-symbols-outlined text-[26px]">notifications</span>
-                                <span id="badgeCount" class="absolute top-1 right-1 size-4 bg-red-500 text-white text-[9px] flex items-center justify-center rounded-full border-2 border-white hidden">0</span>
+                                <span id="badgeCount" class="absolute -top-0.5 -right-0.5 min-h-[16px] min-w-[16px] bg-red-500 text-white text-[8px] font-bold flex items-center justify-center rounded-full border-2 border-white hidden px-0.5 transition-all duration-300 shadow-sm leading-none">0</span>
                             </button>
 
                             <div id="notificationDropdown" class="absolute right-0 mt-3 w-80 bg-white rounded-2xl shadow-2xl border border-slate-200 hidden overflow-hidden z-50 ring-1 ring-black ring-opacity-5">
@@ -186,7 +186,8 @@
                         <div class="flex items-center gap-3">
                             <div class="text-right hidden sm:block">
                                 <p class="text-[12px] font-bold text-slate-800">
-                                    <asp:Literal ID="ltrAdminName" runat="server" /></p>
+                                    <asp:Literal ID="ltrAdminName" runat="server" />
+                                </p>
                                 <p class="text-[10px] text-emerald-500 font-medium flex items-center justify-end gap-1">
                                     <span class="size-1.5 bg-emerald-500 rounded-full animate-pulse"></span>Online
                                 </p>
@@ -261,16 +262,30 @@
                     if (!data.d || data.d.error || data.d.length === 0) return;
 
                     const allOrders = data.d;
-                    // Lấy ID lớn nhất trong danh sách trả về (Đơn mới nhất)
                     const currentMaxId = Math.max(...allOrders.map(o => parseInt(o.ID)));
 
                     const badge = document.getElementById('badgeCount');
                     const list = document.getElementById('notificationList');
                     const icon = document.getElementById('notificationBtn').querySelector('.material-symbols-outlined');
 
-                    // HIỆN SỐ LƯỢNG: Luôn hiện tổng đơn chưa xử lý
-                    badge.innerText = allOrders.length;
-                    badge.classList.remove('hidden');
+                    // --- LOGIC HIỂN THỊ "5+" ---
+                    const count = allOrders.length;
+                    if (count > 0) {
+                        // Sửa thành >= 5 để khi có đúng 5 đơn cũng hiện "5+"
+                        badge.innerText = count >= 5 ? "5+" : count;
+                        badge.classList.remove('hidden');
+
+                        // Điều chỉnh giao diện badge cho đẹp
+                        if (count >= 5) {
+                            badge.classList.add('px-1.5', 'w-auto', 'min-w-[18px]');
+                            badge.classList.remove('size-4');
+                        } else {
+                            badge.classList.remove('px-1.5', 'w-auto', 'min-w-[18px]');
+                            badge.classList.add('size-4');
+                        }
+                    } else {
+                        badge.classList.add('hidden');
+                    }
 
                     // LOGIC NỔ CHUÔNG: Chỉ nổ khi ID mới nhất lớn hơn ID cũ đã lưu
                     if (lastMaxOrderId !== 0 && currentMaxId > lastMaxOrderId) {

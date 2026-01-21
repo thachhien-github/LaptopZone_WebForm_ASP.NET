@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Web.Services;
 using System.Web.UI.WebControls;
 
 namespace LaptopZone_project.Public
@@ -124,62 +125,76 @@ namespace LaptopZone_project.Public
             BindData(pageIndex);
         }
 
-        protected void btnAddToCart_Click(object sender, EventArgs e)
+        [WebMethod(EnableSession = true)]
+        public static string AddToCartAjax(int maLaptop)
         {
-            int maLaptop = int.Parse(((LinkButton)sender).CommandArgument);
-
-            // 1. Lấy thông tin sản phẩm và Tồn kho từ DB
-            using (SqlConnection con = new SqlConnection(connStr))
+            try
             {
-                string sql = "SELECT TenLaptop, AnhBia, Gia, SoLuong FROM Laptop WHERE MaLaptop = @Ma";
-                SqlCommand cmd = new SqlCommand(sql, con);
-                cmd.Parameters.AddWithValue("@Ma", maLaptop);
-                con.Open();
-                SqlDataReader dr = cmd.ExecuteReader();
+                string connStr = ConfigurationManager.ConnectionStrings["LaptopStoreDBConnectionString"].ConnectionString;
 
-                if (dr.Read())
+                using (SqlConnection con = new SqlConnection(connStr))
                 {
-                    int tonKho = Convert.ToInt32(dr["SoLuong"]);
-                    string tenLP = dr["TenLaptop"].ToString();
+                    string sql = "SELECT TenLaptop, AnhBia, Gia, SoLuong FROM Laptop WHERE MaLaptop = @Ma";
+                    SqlCommand cmd = new SqlCommand(sql, con);
+                    cmd.Parameters.AddWithValue("@Ma", maLaptop);
+                    con.Open();
+                    SqlDataReader dr = cmd.ExecuteReader();
 
-                    // 2. Khởi tạo/Lấy giỏ hàng từ Session
-                    DataTable dt = Session["GioHang"] == null ? CreateCartTable() : (DataTable)Session["GioHang"];
-
-                    // 3. Tính toán số lượng dự định sẽ có trong giỏ
-                    int soLuongTrongGio = 0;
-                    DataRow[] rows = dt.Select("MaLaptop = " + maLaptop);
-                    if (rows.Length > 0)
-                        soLuongTrongGio = (int)rows[0]["SoLuong"];
-
-                    // KIỂM TRA TỒN KHO: Nếu số lượng sắp thêm vào > tồn kho thì báo lỗi
-                    if (soLuongTrongGio + 1 > tonKho)
+                    if (dr.Read())
                     {
-                        string msg = $"alert('Rất tiếc! {tenLP} chỉ còn {tonKho} sản phẩm trong kho.');";
-                        ClientScript.RegisterStartupScript(this.GetType(), "OutOfStock", msg, true);
-                        return; // Dừng, không cho thêm vào giỏ
-                    }
+                        int tonKho = Convert.ToInt32(dr["SoLuong"]);
+                        string tenLP = dr["TenLaptop"].ToString();
+                        decimal gia = Convert.ToDecimal(dr["Gia"]);
+                        string anh = dr["AnhBia"].ToString();
 
-                    // 4. Cập nhật giỏ hàng
-                    if (rows.Length > 0)
-                    {
-                        rows[0]["SoLuong"] = soLuongTrongGio + 1;
-                        rows[0]["ThanhTien"] = (int)rows[0]["SoLuong"] * (decimal)rows[0]["Gia"];
-                    }
-                    else
-                    {
-                        DataRow nr = dt.NewRow();
-                        nr["MaLaptop"] = maLaptop;
-                        nr["TenLaptop"] = tenLP;
-                        nr["AnhBia"] = dr["AnhBia"];
-                        nr["Gia"] = dr["Gia"];
-                        nr["SoLuong"] = 1;
-                        nr["ThanhTien"] = dr["Gia"];
-                        dt.Rows.Add(nr);
-                    }
+                        // 1. Khởi tạo giỏ hàng
+                        LaptopTheoLoai page = new LaptopTheoLoai();
+                        DataTable dt = System.Web.HttpContext.Current.Session["GioHang"] == null
+                                       ? page.CreateCartTable()
+                                       : (DataTable)System.Web.HttpContext.Current.Session["GioHang"];
 
-                    Session["GioHang"] = dt;
-                    Response.Redirect(Request.RawUrl);
+                        // 2. Kiểm tra hàng trong giỏ
+                        int soLuongTrongGio = 0;
+                        DataRow[] rows = dt.Select("MaLaptop = " + maLaptop);
+                        if (rows.Length > 0)
+                            soLuongTrongGio = (int)rows[0]["SoLuong"];
+
+                        if (soLuongTrongGio + 1 > tonKho)
+                        {
+                            return $"Error|Rất tiếc! {tenLP} chỉ còn {tonKho} sản phẩm.";
+                        }
+
+                        // 3. Cập nhật DataTable
+                        if (rows.Length > 0)
+                        {
+                            rows[0]["SoLuong"] = soLuongTrongGio + 1;
+                            rows[0]["ThanhTien"] = (int)rows[0]["SoLuong"] * gia;
+                        }
+                        else
+                        {
+                            DataRow nr = dt.NewRow();
+                            nr["MaLaptop"] = maLaptop;
+                            nr["TenLaptop"] = tenLP;
+                            nr["AnhBia"] = anh;
+                            nr["Gia"] = gia;
+                            nr["SoLuong"] = 1;
+                            nr["ThanhTien"] = gia;
+                            dt.Rows.Add(nr);
+                        }
+
+                        System.Web.HttpContext.Current.Session["GioHang"] = dt;
+
+                        // Tính tổng số lượng để cập nhật icon giỏ hàng
+                        int totalItems = dt.AsEnumerable().Sum(x => x.Field<int>("SoLuong"));
+
+                        return $"Success|Đã thêm {tenLP} vào giỏ hàng!|{totalItems}";
+                    }
+                    return "Error|Sản phẩm không tồn tại.";
                 }
+            }
+            catch (Exception ex)
+            {
+                return "Error|Lỗi: " + ex.Message;
             }
         }
 

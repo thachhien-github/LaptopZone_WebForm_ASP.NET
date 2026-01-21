@@ -84,17 +84,20 @@
                                 </div>
 
                                 <div class="d-flex gap-3">
-                                    <asp:LinkButton runat="server" ID="btnAddToCart"
-                                        CommandArgument='<%# Eval("MaLaptop") %>'
-                                        OnClick="btnAddToCart_Click"
-                                        Enabled='<%# Convert.ToInt32(Eval("SoLuong")) > 0 %>'
-                                        CssClass='<%# Convert.ToInt32(Eval("SoLuong")) > 0 ? "btn btn-primary flex-grow-1 d-flex align-items-center justify-content-center gap-2 fw-bold rounded-3 py-3 shadow-sm border-0" : "btn btn-secondary flex-grow-1 d-flex align-items-center justify-content-center gap-2 fw-bold rounded-3 py-3 shadow-sm border-0 disabled" %>'
-                                        Style='<%# Convert.ToInt32(Eval("SoLuong")) > 0 ? "background: #2563eb;": "background: #94a3b8;" %>'>
-                                        <span class="material-symbols-outlined">
+                                    <%-- Nút mua hàng AJAX --%>
+                                    <button type="button" id="btnAddToCartMain"
+                                        <%# Convert.ToInt32(Eval("SoLuong")) <= 0 ? "disabled" : "" %>
+                                        onclick='addToCartAjaxDetail(<%# Eval("MaLaptop") %>)'
+                                        class='<%# Convert.ToInt32(Eval("SoLuong")) > 0 ? "btn btn-primary flex-grow-1 d-flex align-items-center justify-content-center gap-2 fw-bold rounded-3 py-3 shadow-sm border-0" : "btn btn-secondary flex-grow-1 d-flex align-items-center justify-content-center gap-2 fw-bold rounded-3 py-3 shadow-sm border-0 disabled" %>'
+                                        style='<%# Convert.ToInt32(Eval("SoLuong")) > 0 ? "background: #2563eb;": "background: #94a3b8;" %>'>
+
+                                        <span class="material-symbols-outlined" id="cartIcon">
                                             <%# Convert.ToInt32(Eval("SoLuong")) > 0 ? "shopping_cart" : "production_quantity_limits" %>
                                         </span>
-                                        <%# Convert.ToInt32(Eval("SoLuong")) > 0 ? "THÊM VÀO GIỎ HÀNG" : "TẠM HẾT HÀNG" %>
-                                    </asp:LinkButton>
+                                        <span id="btnText">
+                                            <%# Convert.ToInt32(Eval("SoLuong")) > 0 ? "THÊM VÀO GIỎ HÀNG" : "TẠM HẾT HÀNG" %>
+                                        </span>
+                                    </button>
 
                                     <button type="button" class="btn btn-outline-slate border-slate-200 px-3 rounded-3 hover:bg-slate-50">
                                         <span class="material-symbols-outlined text-slate-500">favorite</span>
@@ -179,5 +182,44 @@
             pointer-events: none;
         }
     </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function addToCartAjaxDetail(id) {
+            const btn = $("#btnAddToCartMain");
+            const btnText = $("#btnText");
+            const originalText = btnText.text();
+
+            // Hiệu ứng loading
+            btn.prop('disabled', true);
+            btnText.text("ĐANG XỬ LÝ...");
+
+            $.ajax({
+                type: "POST",
+                url: "ChiTietLaptop.aspx/AddToCartAjax", // Gọi đến WebMethod trong CodeBehind
+                data: JSON.stringify({ maLaptop: id }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    const res = response.d.split('|');
+                    if (res[0] === "Success") {
+                        // Thông báo thành công mượt mà
+                        alert(res[1]);
+                        // Cập nhật số lượng trên header (nếu MasterPage có ID này)
+                        if ($('#cart-count').length) $('#cart-count').text(res[2]);
+                    } else {
+                        alert(res[1]); // Thông báo lỗi tồn kho
+                    }
+                },
+                error: function () {
+                    alert("Không thể kết nối máy chủ!");
+                },
+                complete: function () {
+                    btn.prop('disabled', false);
+                    btnText.text(originalText);
+                }
+            });
+        }
+    </script>
 </asp:Content>
 

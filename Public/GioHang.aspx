@@ -192,4 +192,15 @@
             transition: transform 0.2s;
         }
     </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        function updateMasterCartCount(newCount) {
+            // Tìm thẻ span có id là 'cart-count' ở trang Master
+            var cartBadge = document.getElementById('cart-count');
+            if (cartBadge) {
+                cartBadge.innerText = newCount;
+            }
+        }
+    </script>
 </asp:Content>

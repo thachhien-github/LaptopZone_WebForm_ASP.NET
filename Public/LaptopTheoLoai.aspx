@@ -116,13 +116,16 @@
 
                                         <div class="p-4 pt-0 mt-auto">
                                             <div class="d-flex gap-2">
-                                                <asp:LinkButton runat="server" ID="btnAddToCart"
-                                                    Visible='<%# Convert.ToInt32(Eval("SoLuong")) > 0 %>'
-                                                    CommandArgument='<%# Eval("MaLaptop") %>' OnClick="btnAddToCart_Click"
-                                                    CssClass="btn btn-primary flex-grow-1 d-flex align-items-center justify-content-center gap-2 fw-bold rounded-3 py-2 shadow-sm border-0" Style="background: #2563eb;">
-                            <span class="material-symbols-outlined fs-5">shopping_cart</span> Thêm vào giỏ
-                                                </asp:LinkButton>
+                                                <%-- Nút Thêm vào giỏ hàng sử dụng AJAX --%>
+                                                <%# Convert.ToInt32(Eval("SoLuong")) > 0 ? string.Format(@"
+        <button type='button' id='btnCart_{0}'
+            class='btn btn-primary flex-grow-1 d-flex align-items-center justify-content-center gap-2 fw-bold rounded-3 py-2 shadow-sm border-0' 
+            style='background: #2563eb;'
+            onclick='addToCartAjax({0})'>
+            <span class='material-symbols-outlined fs-5'>shopping_cart</span> Thêm vào giỏ
+        </button>", Eval("MaLaptop")) : "" %>
 
+                                                <%-- Nút Xem chi tiết --%>
                                                 <a href='ChiTietLaptop.aspx?MaLaptop=<%# Eval("MaLaptop") %>'
                                                     class='<%# Convert.ToInt32(Eval("SoLuong")) <= 0 ? "btn btn-outline-secondary w-100" : "btn btn-outline-slate border-slate-200" %> px-3 py-2 rounded-3 hover:bg-slate-50 transition-colors d-flex align-items-center justify-content-center gap-2'>
                                                     <span class="material-symbols-outlined fs-5">visibility</span>
@@ -250,5 +253,40 @@
             transform: none !important;
         }
     </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function addToCartAjax(id) {
+            const btn = $("#btnCart_" + id);
+            const originalHtml = btn.html();
+
+            // Hiệu ứng loading nhẹ
+            btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span>');
+
+            $.ajax({
+                type: "POST",
+                url: "LaptopTheoLoai.aspx/AddToCartAjax",
+                data: JSON.stringify({ maLaptop: id }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    const res = response.d.split('|');
+                    if (res[0] === "Success") {
+                        alert(res[1]); // Bạn có thể thay bằng Toast thông báo
+                        // Cập nhật số lượng giỏ hàng trên menu nếu có
+                        if ($('#cart-count').length) $('#cart-count').text(res[2]);
+                    } else {
+                        alert(res[1]);
+                    }
+                },
+                error: function () {
+                    alert("Lỗi kết nối hệ thống!");
+                },
+                complete: function () {
+                    btn.prop('disabled', false).html(originalHtml);
+                }
+            });
+        }
+    </script>
 </asp:Content>
 

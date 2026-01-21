@@ -4,12 +4,15 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Web;
+using System.Web.Services; // QUAN TRỌNG: Thêm thư viện này
 using System.Web.UI.WebControls;
+
 namespace LaptopZone_project.Public
 {
     public partial class Default : System.Web.UI.Page
     {
-        string connStr = ConfigurationManager.ConnectionStrings["LaptopStoreDBConnectionString"].ConnectionString;
+        private readonly string connStr = ConfigurationManager.ConnectionStrings["LaptopStoreDBConnectionString"].ConnectionString;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -22,7 +25,6 @@ namespace LaptopZone_project.Public
 
         private void LoadFilterData()
         {
-            // Load danh sách hãng sản xuất vào checkbox list
             using (SqlConnection con = new SqlConnection(connStr))
             {
                 SqlCommand cmd = new SqlCommand("SELECT MaHang, TenHang FROM HangSanXuat", con);
@@ -39,29 +41,22 @@ namespace LaptopZone_project.Public
             using (SqlConnection con = new SqlConnection(connStr))
             {
                 string sql = "SELECT * FROM Laptop WHERE 1=1";
-
-                // Lọc theo search
                 string search = Request.QueryString["search"];
+
                 if (!string.IsNullOrEmpty(search))
                 {
                     sql += " AND (TenLaptop LIKE N'%' + @search + '%' OR CPU LIKE N'%' + @search + '%')";
                     ltrTitle.Text = "Kết quả cho: \"" + search + "\"";
                 }
-                else
-                {
-                    ltrTitle.Text = "Laptop Mới Nhất";
-                }
+                else { ltrTitle.Text = "Laptop Mới Nhất"; }
 
-                // Lọc theo hãng
                 var selectedBrands = cblHang.Items.Cast<ListItem>().Where(i => i.Selected).Select(i => i.Value).ToList();
                 if (selectedBrands.Count > 0)
                     sql += " AND MaHang IN (" + string.Join(",", selectedBrands) + ")";
 
-                // Lọc theo RAM
                 if (!string.IsNullOrEmpty(rblRam.SelectedValue))
                     sql += " AND RAM LIKE '%' + @ram + '%'";
 
-                // Sắp xếp
                 switch (ddlSort.SelectedValue)
                 {
                     case "price-asc": sql += " ORDER BY Gia ASC"; break;
@@ -77,10 +72,8 @@ namespace LaptopZone_project.Public
                 DataTable dt = new DataTable();
                 da.Fill(dt);
 
-                // --- DÒNG QUAN TRỌNG ĐỂ HIỂN THỊ TỔNG SỐ SẢN PHẨM ---
                 ltrTotalCount.Text = dt.Rows.Count.ToString();
 
-                // Phân trang
                 PagedDataSource pds = new PagedDataSource
                 {
                     DataSource = dt.DefaultView,
@@ -119,11 +112,13 @@ namespace LaptopZone_project.Public
             BindData(pageIndex);
         }
 
-        protected void btnAddToCart_Click(object sender, EventArgs e)
+        // ================= XỬ LÝ AJAX TẠI ĐÂY =================
+        [WebMethod]
+        public static string AddToCartAjax(int maLaptop)
         {
-            int maLaptop = int.Parse(((LinkButton)sender).CommandArgument);
+            string connStr = ConfigurationManager.ConnectionStrings["LaptopStoreDBConnectionString"].ConnectionString;
+            var context = HttpContext.Current;
 
-            // 1. Lấy thông tin sản phẩm và Tồn kho từ DB
             using (SqlConnection con = new SqlConnection(connStr))
             {
                 string sql = "SELECT TenLaptop, AnhBia, Gia, SoLuong FROM Laptop WHERE MaLaptop = @Ma";
@@ -136,50 +131,43 @@ namespace LaptopZone_project.Public
                 {
                     int tonKho = Convert.ToInt32(dr["SoLuong"]);
                     string tenLP = dr["TenLaptop"].ToString();
+                    decimal gia = Convert.ToDecimal(dr["Gia"]);
 
-                    // 2. Khởi tạo/Lấy giỏ hàng từ Session
-                    DataTable dt = Session["GioHang"] == null ? CreateCartTable() : (DataTable)Session["GioHang"];
+                    DataTable dt = context.Session["GioHang"] == null ? CreateCartTableStatic() : (DataTable)context.Session["GioHang"];
 
-                    // 3. Tính toán số lượng dự định sẽ có trong giỏ
-                    int soLuongTrongGio = 0;
                     DataRow[] rows = dt.Select("MaLaptop = " + maLaptop);
-                    if (rows.Length > 0)
-                        soLuongTrongGio = (int)rows[0]["SoLuong"];
+                    int soLuongTrongGio = rows.Length > 0 ? (int)rows[0]["SoLuong"] : 0;
 
-                    // KIỂM TRA TỒN KHO: Nếu số lượng sắp thêm vào > tồn kho thì báo lỗi
                     if (soLuongTrongGio + 1 > tonKho)
-                    {
-                        string msg = $"alert('Rất tiếc! {tenLP} chỉ còn {tonKho} sản phẩm trong kho.');";
-                        ClientScript.RegisterStartupScript(this.GetType(), "OutOfStock", msg, true);
-                        return; // Dừng, không cho thêm vào giỏ
-                    }
+                        return $"Error|Rất tiếc! {tenLP} chỉ còn {tonKho} sản phẩm.";
 
-                    // 4. Cập nhật giỏ hàng
                     if (rows.Length > 0)
                     {
                         rows[0]["SoLuong"] = soLuongTrongGio + 1;
-                        rows[0]["ThanhTien"] = (int)rows[0]["SoLuong"] * (decimal)rows[0]["Gia"];
+                        rows[0]["ThanhTien"] = (int)rows[0]["SoLuong"] * gia;
                     }
                     else
                     {
                         DataRow nr = dt.NewRow();
                         nr["MaLaptop"] = maLaptop;
                         nr["TenLaptop"] = tenLP;
-                        nr["AnhBia"] = dr["AnhBia"];
-                        nr["Gia"] = dr["Gia"];
+                        nr["AnhBia"] = dr["AnhBia"].ToString();
+                        nr["Gia"] = gia;
                         nr["SoLuong"] = 1;
-                        nr["ThanhTien"] = dr["Gia"];
+                        nr["ThanhTien"] = gia;
                         dt.Rows.Add(nr);
                     }
 
-                    Session["GioHang"] = dt;
-                    Response.Redirect(Request.RawUrl);
+                    context.Session["GioHang"] = dt;
+                    int totalCount = dt.AsEnumerable().Sum(r => r.Field<int>("SoLuong"));
+
+                    return $"Success|Đã thêm {tenLP} vào giỏ hàng!|{totalCount}";
                 }
             }
+            return "Error|Không tìm thấy sản phẩm.";
         }
 
-        // Hàm phụ tạo cấu trúc bảng giỏ hàng
-        private DataTable CreateCartTable()
+        private static DataTable CreateCartTableStatic()
         {
             DataTable dt = new DataTable();
             dt.Columns.Add("MaLaptop", typeof(int));

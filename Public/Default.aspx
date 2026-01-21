@@ -171,15 +171,20 @@
                                             </div>
                                         </a>
 
+
+
                                         <div class="p-4 pt-0 mt-auto">
                                             <div class="d-flex gap-2">
-                                                <asp:LinkButton runat="server" ID="btnAddToCart"
-                                                    Visible='<%# Convert.ToInt32(Eval("SoLuong")) > 0 %>'
-                                                    CommandArgument='<%# Eval("MaLaptop") %>' OnClick="btnAddToCart_Click"
-                                                    CssClass="btn btn-primary flex-grow-1 d-flex align-items-center justify-content-center gap-2 fw-bold rounded-3 py-2 shadow-sm border-0" Style="background: #2563eb;">
-                            <span class="material-symbols-outlined fs-5">shopping_cart</span> Thêm vào giỏ
-                                                </asp:LinkButton>
+                                                <%-- Nút Thêm vào giỏ (Xử lý AJAX) --%>
+                                                <%# Convert.ToInt32(Eval("SoLuong")) > 0 ? @"
+        <button type='button' 
+            class='btn btn-primary flex-grow-1 d-flex align-items-center justify-content-center gap-2 fw-bold rounded-3 py-2 shadow-sm border-0' 
+            style='background: #2563eb;'
+            onclick='addToCartAjax(" + Eval("MaLaptop") + @")'>
+            <span class='material-symbols-outlined fs-5'>shopping_cart</span> Thêm vào giỏ
+        </button>" : "" %>
 
+                                                <%-- Nút Xem chi tiết --%>
                                                 <a href='ChiTietLaptop.aspx?MaLaptop=<%# Eval("MaLaptop") %>'
                                                     class='<%# Convert.ToInt32(Eval("SoLuong")) <= 0 ? "btn btn-outline-secondary w-100" : "btn btn-outline-slate border-slate-200" %> px-3 py-2 rounded-3 hover:bg-slate-50 transition-colors d-flex align-items-center justify-content-center gap-2'>
                                                     <span class="material-symbols-outlined fs-5">visibility</span>
@@ -339,5 +344,38 @@
             border-radius: 0.75rem !important;
         }
     </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function addToCartAjax(id) {
+            $.ajax({
+                type: "POST",
+                url: "Default.aspx/AddToCartAjax",
+                data: JSON.stringify({ maLaptop: id }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    var data = response.d.split('|');
+                    if (data[0] === "Success") {
+                        // Thông báo thành công
+                        alert(data[1]);
+
+                        // Cập nhật số lượng trên icon giỏ hàng (nếu MasterPage có thẻ ID là cart-count)
+                        var cartBadge = document.getElementById("cart-count");
+                        if (cartBadge) {
+                            cartBadge.innerText = data[2];
+                        }
+                    } else {
+                        // Thông báo lỗi (hết hàng,...)
+                        alert(data[1]);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                    alert("Lỗi kết nối server!");
+                }
+            });
+        }
+    </script>
 </asp:Content>
 
