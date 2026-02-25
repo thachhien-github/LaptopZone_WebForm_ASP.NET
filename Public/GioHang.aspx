@@ -60,19 +60,20 @@
                                                             <td class="px-4 py-4 fw-medium"><%# Eval("Gia", "{0:N0}") %>₫</td>
                                                             <td class="px-4 py-4">
                                                                 <div class="input-group input-group-sm" style="width: 110px;">
-                                                                    <asp:LinkButton runat="server" CommandArgument='<%# Eval("MaLaptop") %>' OnClick="btnGiam_Click" CssClass="btn btn-outline-secondary border-slate-200">
+                                                                    <asp:LinkButton runat="server" ID="btnGiam" CommandArgument='<%# Eval("MaLaptop") %>' OnClick="btnGiam_Click" CssClass="btn btn-outline-secondary border-slate-200">
                                                                         <span class="material-symbols-outlined fs-6">remove</span>
                                                                     </asp:LinkButton>
-                                                                    <asp:TextBox ID="txtSoLuong" runat="server" Text='<%# Eval("SoLuong") %>' AutoPostBack="true" OnTextChanged="txtSoLuong_TextChanged"
+                                                                    <asp:TextBox ID="txtSoLuong" runat="server" Text='<%# Eval("SoLuong") %>' AutoPostBack="true"
+                                                                        OnTextChanged="txtSoLuong_TextChanged" data-id='<%# Eval("MaLaptop") %>'
                                                                         CssClass="form-control text-center fw-bold border-slate-200" Style="width: 40px;"></asp:TextBox>
-                                                                    <asp:LinkButton runat="server" CommandArgument='<%# Eval("MaLaptop") %>' OnClick="btnTang_Click" CssClass="btn btn-outline-secondary border-slate-200">
+                                                                    <asp:LinkButton runat="server" ID="btnTang" CommandArgument='<%# Eval("MaLaptop") %>' OnClick="btnTang_Click" CssClass="btn btn-outline-secondary border-slate-200">
                                                                         <span class="material-symbols-outlined fs-6">add</span>
                                                                     </asp:LinkButton>
                                                                 </div>
                                                             </td>
                                                             <td class="px-4 py-4 fw-bold text-primary"><%# Eval("ThanhTien", "{0:N0}") %>₫</td>
                                                             <td class="px-4 py-4 text-center">
-                                                                <asp:LinkButton runat="server" CommandArgument='<%# Eval("MaLaptop") %>' OnClick="btnXoa_Click"
+                                                                <asp:LinkButton runat="server" ID="btnXoa" CommandArgument='<%# Eval("MaLaptop") %>' OnClick="btnXoa_Click"
                                                                     CssClass="text-slate-400 hover-text-danger p-2 rounded-circle" OnClientClick="return confirm('Bạn muốn xóa sản phẩm này?');">
                                                                     <span class="material-symbols-outlined">delete</span>
                                                                 </asp:LinkButton>
@@ -158,7 +159,6 @@
     </div>
 
     <style>
-        /* Các style giữ nguyên như cũ */
         .fs-xs {
             font-size: 0.75rem;
         }
@@ -193,10 +193,8 @@
         }
     </style>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript">
         function updateMasterCartCount(newCount) {
-            // Tìm thẻ span có id là 'cart-count' ở trang Master
             var cartBadge = document.getElementById('cart-count');
             if (cartBadge) {
                 cartBadge.innerText = newCount;

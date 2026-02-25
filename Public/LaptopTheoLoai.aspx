@@ -272,7 +272,7 @@
                 success: function (response) {
                     const res = response.d.split('|');
                     if (res[0] === "Success") {
-                        alert(res[1]); // Bạn có thể thay bằng Toast thông báo
+                        //alert(res[1]); // Bạn có thể thay bằng Toast thông báo
                         // Cập nhật số lượng giỏ hàng trên menu nếu có
                         if ($('#cart-count').length) $('#cart-count').text(res[2]);
                     } else {

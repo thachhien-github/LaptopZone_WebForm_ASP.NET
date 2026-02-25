@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -20,43 +18,41 @@ namespace LaptopZone_project.Public
 
         private void LoadCart()
         {
-            if (Session["GioHang"] != null)
+            if (Session["GioHang"] == null)
             {
-                DataTable dt = (DataTable)Session["GioHang"];
-                if (dt.Rows.Count > 0)
-                {
-                    phEmptyCart.Visible = false;
-                    phCartContent.Visible = true;
-
-                    rptGioHang.DataSource = dt;
-                    rptGioHang.DataBind();
-
-                    // 1. Tính toán tiền
-                    decimal tamTinh = dt.AsEnumerable().Sum(row => row.Field<decimal>("ThanhTien"));
-                    decimal vat = tamTinh * 0.1m;
-                    decimal tongCong = tamTinh + vat;
-
-                    // 2. Tính tổng số lượng thực tế (ví dụ: 2 máy Dell + 1 máy HP = 3)
-                    int tongSoLuong = dt.AsEnumerable().Sum(row => row.Field<int>("SoLuong"));
-
-                    ltrCount.Text = tongSoLuong.ToString(); // Cập nhật chữ trong trang GioHang
-                    ltrTamTinh.Text = tamTinh.ToString("N0");
-                    ltrVAT.Text = vat.ToString("N0");
-                    ltrTongCong.Text = tongCong.ToString("N0");
-
-                    // 3. GỬI LỆNH CẬP NHẬT RA HEADER (MASTER PAGE)
-                    string script = string.Format("updateMasterCartCount('{0}');", tongSoLuong);
-                    ScriptManager.RegisterStartupScript(this, GetType(), "UpdateCartCount", script, true);
-                }
-                else { ShowEmpty(); UpdateMasterCountZero(); }
+                ShowEmpty();
+                UpdateMasterCount(0);
+                return;
             }
-            else { ShowEmpty(); UpdateMasterCountZero(); }
-        }
 
-        // Hàm bổ trợ để reset Master về 0 khi giỏ trống
-        private void UpdateMasterCountZero()
-        {
-            ScriptManager.RegisterStartupScript(this, GetType(), "UpdateCartCount", "updateMasterCartCount('0');", true);
+            DataTable dt = (DataTable)Session["GioHang"];
+
+            if (dt.Rows.Count == 0)
+            {
+                ShowEmpty();
+                UpdateMasterCount(0);
+                return;
+            }
+
+            phEmptyCart.Visible = false;
+            phCartContent.Visible = true;
+
+            rptGioHang.DataSource = dt;
+            rptGioHang.DataBind();
+
+            // Tính toán tiền bạc
+            decimal tamTinh = dt.AsEnumerable().Sum(r => r.Field<decimal>("ThanhTien"));
+            decimal vat = tamTinh * 0.1m;
+            decimal tongCong = tamTinh + vat;
+
+            int tongSoLuong = dt.AsEnumerable().Sum(r => r.Field<int>("SoLuong"));
+
+            ltrCount.Text = tongSoLuong.ToString();
+            ltrTamTinh.Text = tamTinh.ToString("N0");
+            ltrVAT.Text = vat.ToString("N0");
+            ltrTongCong.Text = tongCong.ToString("N0");
+
+            UpdateMasterCount(tongSoLuong);
         }
 
         private void ShowEmpty()
@@ -66,86 +62,93 @@ namespace LaptopZone_project.Public
             ltrCount.Text = "0";
         }
 
-        // Cập nhật khi gõ số vào TextBox
-        protected void txtSoLuong_TextChanged(object sender, EventArgs e)
+        private void UpdateMasterCount(int count)
         {
-            TextBox txt = (TextBox)sender;
-            RepeaterItem item = (RepeaterItem)txt.NamingContainer;
-            int maLaptop = int.Parse(((LinkButton)item.FindControl("btnTang")).CommandArgument); // Lấy mã từ nút ẩn hoặc argument
-
-            UpdateCart(maLaptop, int.Parse(txt.Text));
+            string script = $"updateMasterCartCount('{count}');";
+            ScriptManager.RegisterStartupScript(this, GetType(), "UpdateCartCount", script, true);
         }
 
-        // Nút Tăng số lượng
         protected void btnTang_Click(object sender, EventArgs e)
         {
             int maLaptop = int.Parse(((LinkButton)sender).CommandArgument);
-            DataTable dt = (DataTable)Session["GioHang"];
-            DataRow row = dt.Select("MaLaptop = " + maLaptop).FirstOrDefault();
-            if (row != null)
-            {
-                int slMoi = (int)row["SoLuong"] + 1;
-                UpdateCart(maLaptop, slMoi);
-            }
+            UpdateQuantity(maLaptop, 1);
         }
 
-        // Nút Giảm số lượng
         protected void btnGiam_Click(object sender, EventArgs e)
         {
             int maLaptop = int.Parse(((LinkButton)sender).CommandArgument);
-            DataTable dt = (DataTable)Session["GioHang"];
-            DataRow row = dt.Select("MaLaptop = " + maLaptop).FirstOrDefault();
-            if (row != null)
-            {
-                int slMoi = (int)row["SoLuong"] - 1;
-                if (slMoi > 0) UpdateCart(maLaptop, slMoi);
-            }
+            UpdateQuantity(maLaptop, -1);
         }
 
-        // Hàm dùng chung để cập nhật Session
-        private void UpdateCart(int maLaptop, int soLuong)
+        protected void txtSoLuong_TextChanged(object sender, EventArgs e)
+        {
+            TextBox txt = (TextBox)sender;
+            // Lấy ID từ thuộc tính data-id đã gán ở ASPX
+            int maLaptop = int.Parse(txt.Attributes["data-id"]);
+
+            int soLuong;
+            if (!int.TryParse(txt.Text, out soLuong) || soLuong <= 0)
+                soLuong = 1;
+
+            SetQuantity(maLaptop, soLuong);
+        }
+
+        private void UpdateQuantity(int maLaptop, int delta)
         {
             DataTable dt = (DataTable)Session["GioHang"];
-            foreach (DataRow dr in dt.Rows)
+            if (dt == null) return;
+
+            DataRow row = dt.AsEnumerable().FirstOrDefault(r => r.Field<int>("MaLaptop") == maLaptop);
+            if (row != null)
             {
-                if ((int)dr["MaLaptop"] == maLaptop)
-                {
-                    dr["SoLuong"] = soLuong;
-                    dr["ThanhTien"] = soLuong * (decimal)dr["Gia"];
-                    break;
-                }
+                int soLuongMoi = Convert.ToInt32(row["SoLuong"]) + delta;
+                if (soLuongMoi < 1) soLuongMoi = 1;
+
+                row["SoLuong"] = soLuongMoi;
+                row["ThanhTien"] = soLuongMoi * Convert.ToDecimal(row["Gia"]);
+
+                Session["GioHang"] = dt;
             }
-            Session["GioHang"] = dt;
             LoadCart();
         }
 
-        // Xóa sản phẩm
+        private void SetQuantity(int maLaptop, int soLuong)
+        {
+            DataTable dt = (DataTable)Session["GioHang"];
+            if (dt == null) return;
+
+            DataRow row = dt.AsEnumerable().FirstOrDefault(r => r.Field<int>("MaLaptop") == maLaptop);
+            if (row != null)
+            {
+                row["SoLuong"] = soLuong;
+                row["ThanhTien"] = soLuong * Convert.ToDecimal(row["Gia"]);
+
+                Session["GioHang"] = dt;
+            }
+            LoadCart();
+        }
+
         protected void btnXoa_Click(object sender, EventArgs e)
         {
             int maLaptop = int.Parse(((LinkButton)sender).CommandArgument);
             DataTable dt = (DataTable)Session["GioHang"];
-            DataRow row = dt.Select("MaLaptop = " + maLaptop).FirstOrDefault();
+            if (dt == null) return;
+
+            DataRow row = dt.AsEnumerable().FirstOrDefault(r => r.Field<int>("MaLaptop") == maLaptop);
             if (row != null)
             {
                 dt.Rows.Remove(row);
+                Session["GioHang"] = dt;
             }
-            Session["GioHang"] = dt;
             LoadCart();
         }
 
-        // Nút Thanh toán
         protected void btnThanhToan_Click(object sender, EventArgs e)
         {
             if (Session["TenDN"] == null)
-            {
-                // Chưa đăng nhập thì sang trang Login, lưu lại ReturnUrl để quay lại giỏ hàng
                 Response.Redirect("Login.aspx?ReturnUrl=GioHang.aspx");
-            }
             else
-            {
-                // Đã đăng nhập thì sang trang thanh toán/xác nhận
                 Response.Redirect("ThanhToan.aspx");
-            }
         }
     }
 }

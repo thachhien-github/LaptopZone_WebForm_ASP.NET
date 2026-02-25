@@ -95,7 +95,7 @@
                 <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Trạng thái giao</label>
                 <asp:DropDownList ID="ddlTrangThai" runat="server" CssClass="w-full bg-slate-50 border border-slate-100 rounded-xl text-sm px-4 py-2.5 focus:ring-4 focus:ring-blue-50 outline-none font-medium text-slate-600 cursor-pointer">
                     <asp:ListItem Value="-1">Tất cả đơn hàng</asp:ListItem>
-                    <asp:ListItem Value="0">Chờ xử lý</asp:ListItem>
+                    <asp:ListItem Value="0">Đang xử lý</asp:ListItem>
                     <asp:ListItem Value="1">Đã hoàn thành</asp:ListItem>
                 </asp:DropDownList>
             </div>

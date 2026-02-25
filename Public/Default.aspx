@@ -358,7 +358,7 @@
                     var data = response.d.split('|');
                     if (data[0] === "Success") {
                         // Thông báo thành công
-                        alert(data[1]);
+                        //alert(data[1]);
 
                         // Cập nhật số lượng trên icon giỏ hàng (nếu MasterPage có thẻ ID là cart-count)
                         var cartBadge = document.getElementById("cart-count");

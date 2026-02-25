@@ -238,7 +238,7 @@
                     const res = response.d.split('|');
                     if (res[0] === "Success") {
                         // Thông báo thành công mượt mà
-                        alert(res[1]);
+                        //alert(res[1]);
                         // Cập nhật số lượng trên header (nếu MasterPage có ID này)
                         if ($('#cart-count').length) $('#cart-count').text(res[2]);
                     } else {
