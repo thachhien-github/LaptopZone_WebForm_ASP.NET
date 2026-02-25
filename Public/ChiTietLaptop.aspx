@@ -121,46 +121,50 @@
         .text-emerald-700 {
             color: #047857;
         }
-
+    
         .bg-emerald-50 {
             background-color: #ecfdf5;
         }
-
+    
         .border-emerald-100 {
             border-color: #d1fae5;
         }
-
+    
         .bg-slate-50 {
             background-color: #f8fafc;
         }
-
+    
         .text-slate-400 {
             color: #94a3b8;
         }
-
+    
         .text-slate-600 {
             color: #475569;
         }
-
+    
         .border-slate-200 {
             border-color: #e2e8f0;
         }
-
+    
         .btn-outline-slate {
             border: 1px solid #e2e8f0;
             background: white;
+            padding: 0.5em 1.5em;
+            font-size: 1rem;
+            border-radius: 4px;
+            transition: background 0.2s;
         }
-
-            .btn-outline-slate:hover {
-                background: #f8fafc;
-            }
-
+    
+        .btn-outline-slate:hover {
+            background: #f8fafc;
+        }
+    
         /* Style mới cho trường hợp hết hàng */
         .out-of-stock-filter {
             filter: grayscale(0.6);
             opacity: 0.8;
         }
-
+    
         .badge-sold-out-large {
             position: absolute;
             top: 50%;
@@ -175,11 +179,41 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             z-index: 10;
             pointer-events: none;
+            font-size: 2rem;
+            text-align: center;
+            min-width: 180px;
+            max-width: 90vw;
+            word-break: break-word;
         }
-
+    
         .btn.disabled {
             cursor: not-allowed;
             pointer-events: none;
+        }
+    
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .btn-outline-slate {
+                padding: 0.5em 1em;
+                font-size: 0.95rem;
+            }
+            .badge-sold-out-large {
+                font-size: 1.2rem;
+                padding: 8px 16px;
+                min-width: 120px;
+            }
+        }
+    
+        @media (max-width: 480px) {
+            .btn-outline-slate {
+                padding: 0.4em 0.7em;
+                font-size: 0.9rem;
+            }
+            .badge-sold-out-large {
+                font-size: 1rem;
+                padding: 6px 8px;
+                min-width: 80px;
+            }
         }
     </style>
 
