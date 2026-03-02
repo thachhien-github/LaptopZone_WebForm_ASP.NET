@@ -26,42 +26,61 @@ namespace LaptopZone_project.Public
             {
                 con.Open();
 
-                // 1. KIỂM TRA BẢNG ADMIN TRƯỚC
-                string sqlAdmin = "SELECT TenDN FROM Admin WHERE TenDN=@dn AND MatKhau=@mk";
+                // 1. KIỂM TRA BẢNG ADMIN (CÓ ROLE)
+                string sqlAdmin = "SELECT TenDN, HoTen, Role FROM Admin WHERE TenDN=@dn AND MatKhau=@mk";
                 SqlCommand cmdAdmin = new SqlCommand(sqlAdmin, con);
                 cmdAdmin.Parameters.AddWithValue("@dn", tenDN);
                 cmdAdmin.Parameters.AddWithValue("@mk", matKhau);
-                object adminResult = cmdAdmin.ExecuteScalar();
 
-                if (adminResult != null)
+                SqlDataReader drAdmin = cmdAdmin.ExecuteReader();
+
+                if (drAdmin.Read())
                 {
-                    // Nếu là Admin: Cấp cả 2 Session cho tiện
-                    Session["admin"] = adminResult.ToString();
-                    Session["TenDN"] = adminResult.ToString();
-                    Session["HoTen"] = "Quản trị viên";
+                    string role = drAdmin["Role"].ToString();
 
-                    Response.Redirect("~/Admin/Dashboard.aspx"); // Vào thẳng trang quản trị
+                    Session["TenDN"] = drAdmin["TenDN"].ToString();
+                    Session["HoTen"] = drAdmin["HoTen"].ToString();
+                    Session["Role"] = role;
+
+                    drAdmin.Close();
+
+                    if (role == "Admin")
+                    {
+                        Session["admin"] = tenDN;
+                        Response.Redirect("~/Admin/Dashboard.aspx");
+                    }
+                    else if (role == "Shipper")
+                    {
+                        Session["shipper"] = tenDN;
+                        Response.Redirect("~/Shipper/Default.aspx");
+                    }
+
                     return;
                 }
 
-                // 2. NẾU KHÔNG PHẢI ADMIN, KIỂM TRA BẢNG KHACHHANG
-                string sqlKH = "SELECT MaKH, HoTenKH FROM KhachHang WHERE TenDN = @dn AND MatKhau = @mk";
+                drAdmin.Close();
+
+                // 2. NẾU KHÔNG PHẢI ADMIN/SHIPPER → KIỂM TRA KHÁCH HÀNG
+                string sqlKH = "SELECT MaKH, HoTenKH FROM KhachHang WHERE TenDN=@dn AND MatKhau=@mk";
                 SqlCommand cmdKH = new SqlCommand(sqlKH, con);
                 cmdKH.Parameters.AddWithValue("@dn", tenDN);
                 cmdKH.Parameters.AddWithValue("@mk", matKhau);
-                SqlDataReader dr = cmdKH.ExecuteReader();
 
-                if (dr.Read())
+                SqlDataReader drKH = cmdKH.ExecuteReader();
+
+                if (drKH.Read())
                 {
-                    Session["MaKH"] = dr["MaKH"];
+                    Session["MaKH"] = drKH["MaKH"];
                     Session["TenDN"] = tenDN;
-                    Session["HoTen"] = dr["HoTenKH"].ToString();
+                    Session["HoTen"] = drKH["HoTenKH"].ToString();
+                    Session["Role"] = "Customer";
 
                     Response.Redirect("Default.aspx");
                 }
                 else
                 {
-                    ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Tên đăng nhập hoặc mật khẩu không đúng!');", true);
+                    ClientScript.RegisterStartupScript(this.GetType(), "alert",
+                        "alert('Tên đăng nhập hoặc mật khẩu không đúng!');", true);
                 }
             }
         }

@@ -205,6 +205,78 @@
             0%, 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7); }
             70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(6, 182, 212, 0); }
         }
+
+        /* ================= RESPONSIVE ================= */
+
+/* 📱 Mobile */
+@media (max-width: 575.98px) {
+
+    .login-wrapper {
+        padding-top: 40px;
+        padding-bottom: 40px;
+    }
+
+    .brand-name-login {
+        font-size: 22px;
+        letter-spacing: -1px;
+        justify-content: center;
+    }
+
+    .highlight-z {
+        font-size: 32px;
+    }
+
+    .one-text {
+        font-size: 20px;
+    }
+
+    .blob-1, .blob-2 {
+        display: none; /* Ẩn blob trên mobile */
+    }
+
+    .btn-login-gradient {
+        padding: 12px;
+        font-size: 14px;
+    }
+
+    .btn-social-auth {
+        font-size: 12px;
+        padding: 10px;
+    }
+}
+
+/* 📲 Tablet */
+@media (min-width: 576px) and (max-width: 991.98px) {
+
+    .brand-name-login {
+        font-size: 24px;
+    }
+
+    .highlight-z {
+        font-size: 36px;
+    }
+
+    .one-text {
+        font-size: 22px;
+    }
+
+    .blob-1, .blob-2 {
+        width: 400px;
+        height: 400px;
+    }
+
+    .login-wrapper {
+        min-height: auto;
+    }
+}
+
+/* 💻 Large Desktop */
+@media (min-width: 1200px) {
+
+    .col-lg-11 {
+        max-width: 1050px;
+    }
+}
     </style>
 
     <script>

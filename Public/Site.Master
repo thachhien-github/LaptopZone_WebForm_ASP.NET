@@ -109,6 +109,7 @@
             height: 50px;
         }
 
+        /* TÙY CHỈNH HIỆU ỨNG LỚP GIẢ CHO MENU */
         .nav-item-link {
             font-size: 13px;
             font-weight: 600;
@@ -120,14 +121,48 @@
             display: inline-flex;
             align-items: center;
             padding: 0 18px;
-            border-bottom: 3px solid transparent;
-            transition: 0.2s;
+            position: relative;
+            transition: all 0.3s;
+            z-index: 1;
         }
 
-            .nav-item-link:hover, .nav-item-link.active {
-                color: var(--primary);
-                border-bottom-color: var(--primary);
+            /* Lớp giả tạo nền khi active hoặc hover */
+            .nav-item-link::before {
+                content: "";
+                position: absolute;
+                top: 8px;
+                bottom: 8px;
+                left: 4px;
+                right: 4px;
+                background-color: transparent;
+                border-radius: 8px;
+                z-index: -1;
+                transition: all 0.2s;
             }
+
+            .nav-item-link:hover::before {
+                background-color: var(--slate-100);
+            }
+
+            /* Trạng thái được chọn */
+            .nav-item-link.active {
+                color: var(--primary);
+            }
+
+                .nav-item-link.active::before {
+                    background-color: rgba(9, 132, 227, 0.1);
+                }
+
+                .nav-item-link.active::after {
+                    content: "";
+                    position: absolute;
+                    bottom: 0;
+                    left: 18px;
+                    right: 18px;
+                    height: 3px;
+                    background: var(--primary);
+                    border-radius: 3px 3px 0 0;
+                }
 
         .cart-btn {
             width: 44px;
@@ -198,6 +233,154 @@
             margin-bottom: 15px;
             align-items: flex-start;
         }
+
+        /* ===================== RESPONSIVE FULL ===================== */
+
+        /* Tablet fix nav overflow */
+        @media (max-width: 1199px) {
+            .nav-bar .container {
+                flex-wrap: wrap;
+            }
+        }
+
+        /* ================= MOBILE ================= */
+        @media (max-width: 991.98px) {
+
+            /* Header co lại */
+            .header-main {
+                height: 70px;
+            }
+
+            .brand-name {
+                font-size: 22px;
+                letter-spacing: -1px;
+            }
+
+            .highlight-z {
+                font-size: 28px;
+            }
+
+            .one-text {
+                font-size: 18px;
+            }
+
+            /* Ẩn search desktop */
+            .search-container {
+                display: none !important;
+            }
+
+            /* Icon nhỏ lại */
+            .cart-btn {
+                width: 38px;
+                height: 38px;
+            }
+
+            /* NAV xuống dòng thay vì tràn */
+            .nav-bar {
+                height: auto;
+            }
+
+                .nav-bar .container {
+                    flex-wrap: wrap;
+                    padding-top: 8px;
+                    padding-bottom: 8px;
+                }
+
+            .nav-item-link {
+                height: auto;
+                padding: 10px 14px;
+                font-size: 12px;
+            }
+
+                /* Bỏ underline active trên mobile */
+                .nav-item-link.active::after {
+                    display: none;
+                }
+
+                .nav-item-link::before {
+                    display: none;
+                }
+
+                /* Khuyến mãi không ép sang phải */
+                .nav-item-link.ms-auto {
+                    margin-left: 0 !important;
+                }
+
+            /* Footer gọn lại */
+            .footer-modern {
+                padding: 40px 0 20px;
+            }
+
+            .footer-title {
+                font-size: 14px;
+                margin-bottom: 15px;
+            }
+
+            .footer-link {
+                font-size: 13px;
+                margin-bottom: 8px;
+            }
+        }
+
+        /* ================= SMALL MOBILE ================= */
+        @media (max-width: 575.98px) {
+
+            .brand-name {
+                font-size: 20px;
+            }
+
+            .highlight-z {
+                font-size: 24px;
+            }
+
+            .one-text {
+                font-size: 16px;
+            }
+
+            .contact-item {
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .footer-modern .row > div {
+                text-align: center;
+            }
+
+            .footer-modern .d-flex {
+                justify-content: center !important;
+            }
+
+            .footer-modern img {
+                max-height: 16px;
+            }
+        }
+
+        /* ================= TABLET OPTIMIZE ================= */
+        @media (min-width: 576px) and (max-width: 991.98px) {
+
+            .search-container {
+                max-width: 350px;
+            }
+
+            .brand-name {
+                font-size: 26px;
+            }
+
+            .highlight-z {
+                font-size: 32px;
+            }
+
+            .one-text {
+                font-size: 22px;
+            }
+        }
+
+        /* ================= LARGE DESKTOP ================= */
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1200px;
+            }
+        }
     </style>
     <asp:ContentPlaceHolder ID="head" runat="server"></asp:ContentPlaceHolder>
 </head>
@@ -265,12 +448,17 @@
 
         <nav class="nav-bar shadow-sm">
             <div class="container h-100 d-flex align-items-center">
-                <a href="Default.aspx" class="nav-item-link active">Trang chủ</a>
+                <a href="Default.aspx" class='nav-item-link <%= Request.QueryString["MaLoai"] == null ? "active" : "" %>'>Trang chủ</a>
+
                 <asp:Repeater ID="rptMenu" runat="server" DataSourceID="dsLoaiLaptop">
-                    <ItemTemplate>
-                        <a href='LaptopTheoLoai.aspx?MaLoai=<%# Eval("MaLoai") %>' class="nav-item-link"><%# Eval("TenLoai") %></a>
-                    </ItemTemplate>
+                    <itemtemplate>
+                        <a href='LaptopTheoLoai.aspx?MaLoai=<%# Eval("MaLoai") %>'
+                            class='nav-item-link <%# Request.QueryString["MaLoai"] != null && Request.QueryString["MaLoai"].ToString() == Eval("MaLoai").ToString() ? "active" : "" %>'>
+                            <%# Eval("TenLoai") %>
+                        </a>
+                    </itemtemplate>
                 </asp:Repeater>
+
                 <a href="#" class="nav-item-link text-danger ms-auto fw-bold">
                     <span class="material-symbols-outlined fs-5 me-1">local_fire_department</span> Khuyến mãi hot
                 </a>

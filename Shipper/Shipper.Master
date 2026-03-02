@@ -1,0 +1,154 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Shipper.master.cs"
+    Inherits="LaptopZone_project.Shipper.Shipper" %>
+
+<!DOCTYPE html>
+<html lang="vi">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#0984e3",
+                        "background-light": "#f8fafc",
+                        "background-dark": "#111621",
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+    <title>LaptopZone Shipper</title>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* ===== Logo Style giống Admin ===== */
+        .brand-name-shipper {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 18px;
+            letter-spacing: -1px;
+            color: #1e293b;
+            display: flex;
+            align-items: baseline;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        .highlight-z-shipper {
+            font-size: 26px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00d2ff 0%, #0984e3 50%, #6c5ce7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+            margin-left: 2px;
+        }
+
+        .one-text-shipper {
+            background: linear-gradient(to bottom, #0984e3, #0773c5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        /* Active bottom nav */
+        .nav-active {
+            color: #0984e3 !important;
+            font-weight: 700;
+        }
+    </style>
+
+    <asp:ContentPlaceHolder ID="head" runat="server" />
+</head>
+
+<body class="bg-background-light text-slate-900">
+
+<form runat="server">
+
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden pb-24">
+
+    <!-- HEADER -->
+    <header class="flex items-center bg-white px-4 py-3 sticky top-0 z-50 border-b justify-between shadow-sm">
+
+        <!-- LOGO -->
+        <div class="flex flex-col items-start">
+            <h1 class="brand-name-shipper">
+                LAPTOP
+                <span class="flex items-baseline">
+                    <span class="highlight-z-shipper">Z</span>
+                    <span class="one-text-shipper">ONE</span>
+                </span>
+            </h1>
+            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em]">
+                Shipper App
+            </span>
+        </div>
+
+        <!-- SHIPPER NAME -->
+        <div class="text-right text-sm font-semibold text-slate-700">
+            👤 <asp:Literal ID="ltrShipperName" runat="server" />
+        </div>
+
+    </header>
+
+    <!-- CONTENT -->
+    <main class="flex-1 px-4 py-5">
+        <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+    </main>
+
+    <!-- BOTTOM NAV -->
+    <nav class="fixed bottom-0 left-0 right-0 border-t bg-white px-6 pb-6 pt-3 shadow-lg">
+        <div class="flex justify-between max-w-lg mx-auto">
+
+            <asp:HyperLink ID="linkDashboard" runat="server"
+                NavigateUrl="~/Shipper/Default.aspx"
+                CssClass="flex flex-col items-center gap-1 text-slate-400">
+                <span class="material-symbols-outlined">grid_view</span>
+                <span class="text-[11px]">Tổng quan</span>
+            </asp:HyperLink>
+
+            <asp:HyperLink ID="linkDonMoi" runat="server"
+                NavigateUrl="~/Shipper/DonMoi.aspx"
+                CssClass="flex flex-col items-center gap-1 text-slate-400">
+                <span class="material-symbols-outlined">local_shipping</span>
+                <span class="text-[11px]">Đơn mới</span>
+            </asp:HyperLink>
+
+            <asp:HyperLink ID="linkLichSu" runat="server"
+                NavigateUrl="~/Shipper/LichSu.aspx"
+                CssClass="flex flex-col items-center gap-1 text-slate-400">
+                <span class="material-symbols-outlined">history</span>
+                <span class="text-[11px]">Lịch sử</span>
+            </asp:HyperLink>
+
+            <asp:HyperLink ID="linkProfile" runat="server"
+                NavigateUrl="~/Shipper/Profile.aspx"
+                CssClass="flex flex-col items-center gap-1 text-slate-400">
+                <span class="material-symbols-outlined">person</span>
+                <span class="text-[11px]">Cá nhân</span>
+            </asp:HyperLink>
+
+        </div>
+    </nav>
+
+</div>
+
+</form>
+
+</body>
+</html>

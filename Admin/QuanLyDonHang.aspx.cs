@@ -28,10 +28,12 @@ namespace LaptopZone_project.Admin
             using (SqlConnection con = new SqlConnection(strCon))
             {
                 // Truy vấn cơ bản: Kết hợp bảng đơn hàng và khách hàng
-                string sql = @"SELECT d.*, k.HoTenKH 
-                             FROM DonDatHang d 
-                             INNER JOIN KhachHang k ON d.MaKH = k.MaKH 
-                             WHERE 1=1";
+                string sql = @"SELECT d.SoDH, d.NgayDH, d.TriGia, d.DaGiao,
+                      d.TenDNShipper,
+                      k.HoTenKH
+               FROM DonDatHang d
+               INNER JOIN KhachHang k ON d.MaKH = k.MaKH
+               WHERE 1=1";
 
                 // 1. Cập nhật logic tìm kiếm: Tìm theo Tên khách hàng HOẶC Mã đơn hàng
                 if (!string.IsNullOrEmpty(txtSearch.Text.Trim()))

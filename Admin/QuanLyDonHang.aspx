@@ -170,6 +170,17 @@
                             </ItemTemplate>
                         </asp:TemplateField>
 
+                        <asp:TemplateField HeaderText="Tên Shipper">
+                            <HeaderStyle CssClass="px-6 py-4 text-center" />
+                            <ItemStyle CssClass="px-6 py-5 text-center" />
+                            <ItemTemplate>
+                                <%# string.IsNullOrEmpty(Eval("TenDNShipper")?.ToString()) 
+? "<span class='text-slate-300 text-xs italic'>Chưa nhận</span>"
+: "<span class='inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 text-[#0984e3] text-[10px] font-bold uppercase border border-blue-100'>" 
+    + Eval("TenDNShipper") + "</span>" %>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+
                         <asp:TemplateField HeaderText="Thao tác">
                             <HeaderStyle CssClass="px-6 py-4 text-right" />
                             <ItemStyle CssClass="px-6 py-5 text-right" />

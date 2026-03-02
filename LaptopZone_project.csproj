@@ -80,7 +80,7 @@
     <Content Include="Admin\QuanLyLoai.aspx" />
     <Content Include="Admin\SuaLaptop.aspx" />
     <Content Include="Admin\ThemLaptop.aspx" />
-    <Content Include="Database\LaptopZoneDB.sql" />
+    <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="Images\asus_flip.jpg" />
     <Content Include="Images\delldcsc.jpg" />
@@ -106,6 +106,12 @@
     <Content Include="Public\Profile.aspx" />
     <Content Include="Public\Register.aspx" />
     <Content Include="Public\ThanhToan.aspx" />
+    <Content Include="Shipper\Default.aspx" />
+    <Content Include="Shipper\DonChiTiet.aspx" />
+    <Content Include="Shipper\DonDangGiao.aspx" />
+    <Content Include="Shipper\DonMoi.aspx" />
+    <Content Include="Shipper\LichSu.aspx" />
+    <Content Include="Shipper\Profile.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -207,6 +213,13 @@
     <Compile Include="Admin\ThemLaptop.aspx.designer.cs">
       <DependentUpon>ThemLaptop.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -288,11 +301,61 @@
     <Compile Include="Public\ThanhToan.aspx.designer.cs">
       <DependentUpon>ThanhToan.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Shipper\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Shipper\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Shipper\DonChiTiet.aspx.cs">
+      <DependentUpon>DonChiTiet.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Shipper\DonChiTiet.aspx.designer.cs">
+      <DependentUpon>DonChiTiet.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Shipper\DonDangGiao.aspx.cs">
+      <DependentUpon>DonDangGiao.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Shipper\DonDangGiao.aspx.designer.cs">
+      <DependentUpon>DonDangGiao.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Shipper\DonMoi.aspx.cs">
+      <DependentUpon>DonMoi.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Shipper\DonMoi.aspx.designer.cs">
+      <DependentUpon>DonMoi.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Shipper\LichSu.aspx.cs">
+      <DependentUpon>LichSu.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Shipper\LichSu.aspx.designer.cs">
+      <DependentUpon>LichSu.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Shipper\Profile.aspx.cs">
+      <DependentUpon>Profile.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Shipper\Profile.aspx.designer.cs">
+      <DependentUpon>Profile.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Shipper\Shipper.Master.cs">
+      <DependentUpon>Shipper.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Shipper\Shipper.Master.designer.cs">
+      <DependentUpon>Shipper.Master</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Admin\Admin.Master" />
     <None Include="packages.config" />
     <Content Include="Public\Site.Master" />
+    <Content Include="Shipper\Shipper.Master" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

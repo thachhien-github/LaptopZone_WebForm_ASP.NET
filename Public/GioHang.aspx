@@ -138,7 +138,6 @@
                                         <div class="d-flex justify-content-center gap-2 opacity-50">
                                             <img src="https://img.icons8.com/color/48/visa.png" width="30" />
                                             <img src="https://img.icons8.com/color/48/mastercard.png" width="30" />
-                                            <img src="https://img.icons8.com/color/48/momo.png" width="30" />
                                         </div>
                                     </div>
                                 </div>
@@ -202,3 +201,4 @@
         }
     </script>
 </asp:Content>
+
