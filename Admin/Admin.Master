@@ -142,7 +142,7 @@
                     <div class="p-4 border-t border-slate-100 bg-slate-50/50 mt-auto">
                         <asp:LinkButton ID="lbtnThoat" runat="server" OnClick="lbtnThoat_Click"
                             CssClass="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-red-500 hover:bg-red-100/50 transition-all font-semibold text-sm">
-                            <span class="material-symbols-outlined text-[20px]">power_settings_new</span> 
+                            <span class="material-symbols-outlined text-[20px]">power_settings_new</span>
                             <span>Đăng xuất hệ thống</span>
                         </asp:LinkButton>
                     </div>

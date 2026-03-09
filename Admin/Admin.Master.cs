@@ -25,6 +25,8 @@ namespace LaptopZone_project.Admin
             }
         }
 
+        // quản lý trạng thái active của menu dựa trên URL hiện tại
+
         private void UpdateNavigationState()
         {
             string pageName = Path.GetFileName(Request.Url.AbsolutePath).ToLower();
@@ -37,6 +39,7 @@ namespace LaptopZone_project.Admin
             nav_kh.Attributes["class"] = normalClass;
             nav_dh.Attributes["class"] = normalClass;
 
+            // Dựa vào tên trang để xác định menu nào đang được truy cập và thiết lập trạng thái active tương ứng
             switch (pageName)
             {
                 case "dashboard.aspx":
@@ -60,6 +63,7 @@ namespace LaptopZone_project.Admin
             }
         }
 
+        // Thiết lập trạng thái active cho menu và cập nhật tiêu đề, breadcrumb
         private void SetActive(System.Web.UI.HtmlControls.HtmlAnchor control, string title, string breadcrumb)
         {
             control.Attributes["class"] = "flex items-center gap-3 px-3 py-2.5 rounded-lg nav-item-active transition-all group";
@@ -67,6 +71,7 @@ namespace LaptopZone_project.Admin
             ltrBreadcrumb.Text = breadcrumb;
         }
 
+        // API lấy 5 đơn hàng mới nhất chưa giao để hiển thị thông báo trên header
         [WebMethod]
         public static object GetNewOrders()
         {
